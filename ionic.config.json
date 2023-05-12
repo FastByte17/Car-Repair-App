@@ -1,0 +1,7 @@
+{
+  "name": "Car_Repair_App",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
