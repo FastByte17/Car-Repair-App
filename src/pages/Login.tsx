@@ -29,7 +29,6 @@ const Login: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <IonImg className="loginPicture" src="src\assets\mechanic.jpg" alt="Image not found!"></IonImg>
         <form onSubmit={handleSubmit}>
           <IonItem>
             <IonLabel position="floating">Enter Pin Code</IonLabel>

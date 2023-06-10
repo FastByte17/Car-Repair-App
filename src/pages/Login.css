@@ -2,8 +2,14 @@
     text-align: center;
 }
 
-.loginPicture {
-    border-radius: 50%;
-    height: 40%;
-    width: 100%;
+ion-content {
+    --background: url('../assets/speedometer.jpg') no-repeat center center fixed;
+    background-size: cover;
+    /* height: 100vh; */
+}
+
+@media (max-width: 767px) {
+    ion-content {
+        background-size: contain;
+    }
 }
