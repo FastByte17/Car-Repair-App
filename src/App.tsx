@@ -10,10 +10,12 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { clipboard, clipboardOutline, ellipse, square, triangle } from 'ionicons/icons';
+import { clipboard, clipboardOutline, ellipse, logInOutline, receiptOutline, square, timerOutline, triangle } from 'ionicons/icons';
+
 import Login from './pages/Login';
 import Inspection from './pages/Inspection';
-import Tab3 from './pages/Tab3';
+import Shifts from './pages/Shifts';
+import Summary from './pages/Summary';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -41,32 +43,50 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
+
           <Route exact path="/login">
             <Login />
           </Route>
+
           <Route exact path="/inspection">
             <Inspection />
           </Route>
-          <Route path="/tab3">
-            <Tab3 />
+
+          <Route path="/shifts">
+            <Shifts />
           </Route>
+
+          <Route path="/summary">
+            <Summary />
+          </Route>
+
           <Route exact path="/">
             <Redirect to="/login" />
           </Route>
+
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
+
           <IonTabButton tab="login" href="/login">
-            <IonIcon aria-hidden="true" icon={triangle} />
+            <IonIcon aria-hidden="true" icon={logInOutline} />
             <IonLabel>Login</IonLabel>
           </IonTabButton>
+
           <IonTabButton tab="inspection" href="/inspection">
             <IonIcon aria-hidden="true" icon={clipboardOutline} />
             <IonLabel>Inspection</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Tab 3</IonLabel>
+
+          <IonTabButton tab="shifts" href="/shifts">
+            <IonIcon aria-hidden="true" icon={timerOutline} />
+            <IonLabel>Shifts</IonLabel>
           </IonTabButton>
+
+          <IonTabButton tab="summary" href="/summary">
+            <IonIcon aria-hidden="true" icon={receiptOutline} />
+            <IonLabel>Summary</IonLabel>
+          </IonTabButton>
+
         </IonTabBar>
       </IonTabs>
     </IonReactRouter>
