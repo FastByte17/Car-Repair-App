@@ -13,7 +13,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import { clipboard, clipboardOutline, ellipse, logInOutline, receiptOutline, square, timerOutline, triangle } from 'ionicons/icons';
 
 import Login from './pages/Login';
-import Inspection from './pages/Inspection';
+import Inspection from './pages/Inspection/Inspection';
 import Shifts from './pages/Shifts';
 import Summary from './pages/Summary';
 
