@@ -1,9 +1,13 @@
 import {
   IonActionSheet,
+  IonAlert,
+  IonButton,
   IonButtons,
   IonCard, IonCardContent, IonCardHeader, IonCardSubtitle,
-  IonCardTitle, IonCol, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonList, IonMenu, IonMenuButton, IonPage,
-  IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar
+  IonCardTitle, IonCol, IonContent, IonFab, IonFabButton,
+  IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList,
+  IonMenu, IonMenuButton, IonPage, IonPopover, IonRow, IonSelect,
+  IonSelectOption, IonTextarea, IonTitle, IonToolbar
 } from '@ionic/react';
 import ExploreContainer from '../../components/ExploreContainer';
 import '../Tab2.css';
@@ -17,6 +21,25 @@ import {
 const Inspection: React.FC = () => {
 
   const [selectListVisible, setSelectListVisible] = useState(false);
+  const [showPopover, setShowPopover] = useState(false);
+  const [regNumber, setRegNumber] = useState('');
+  const [selectedOption, setSelectedOption] = useState('');
+  const [notes, setNotes] = useState('');
+
+  const handleSave = () => {
+    // Perform any necessary actions with the entered data
+    console.log('Vehicle Reg Number:', regNumber);
+    console.log('Selected Option:', selectedOption);
+    console.log('Notes:', notes);
+
+    // Close the alert
+    setShowPopover(false);
+  };
+
+  const handleCancel = () => {
+    // Close the popover without saving
+    setShowPopover(false);
+  };
 
   const inspectionMenu = () => {
     setSelectListVisible(true);
@@ -123,10 +146,50 @@ const Inspection: React.FC = () => {
         </>
 
         <IonFab slot='fixed' vertical='bottom' horizontal='end'>
-          <IonFabButton>
+          <IonFabButton onClick={() => setShowPopover(true)}>
             <IonIcon icon={add}></IonIcon>
           </IonFabButton>
         </IonFab>
+
+        <IonPopover
+          isOpen={showPopover}
+          onDidDismiss={() => setShowPopover(false)}>
+          <IonContent>
+            <IonList>
+              <IonItem>
+                <IonLabel position="stacked">Vehicle Reg Number</IonLabel>
+                <IonInput
+                  value={regNumber}
+                  placeholder="Vehicle Reg Number"
+                  onIonChange={(e) => setRegNumber(e.detail.value!)}
+                ></IonInput>
+              </IonItem>
+              <IonItem>
+                <IonLabel>Select an option:</IonLabel>
+                <IonSelect
+                  value={selectedOption}
+                  placeholder="Select option"
+                  onIonChange={(e) => setSelectedOption(e.detail.value)}>
+                  <IonSelectOption value="Option 1">Option 1</IonSelectOption>
+                  <IonSelectOption value="Option 2">Option 2</IonSelectOption>
+                  <IonSelectOption value="Option 3">Option 3</IonSelectOption>
+                </IonSelect>
+              </IonItem>
+              <IonItem>
+                <IonLabel position="stacked">Notes:</IonLabel>
+                <IonTextarea
+                  value={notes}
+                  onIonChange={(e) => setNotes(e.detail.value!)}
+                ></IonTextarea>
+              </IonItem>
+            </IonList>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px' }}>
+              <IonButton onClick={handleCancel}>Cancel</IonButton>
+              <IonButton onClick={handleSave}>Save</IonButton>
+            </div>
+          </IonContent>
+        </IonPopover>
 
       </IonContent>
     </IonPage>
