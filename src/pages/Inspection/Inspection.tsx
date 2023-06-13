@@ -2,12 +2,16 @@ import {
   IonActionSheet,
   IonButtons,
   IonCard, IonCardContent, IonCardHeader, IonCardSubtitle,
-  IonCardTitle, IonCol, IonContent, IonHeader, IonList, IonMenu, IonMenuButton, IonPage,
+  IonCardTitle, IonCol, IonContent, IonHeader, IonIcon, IonList, IonMenu, IonMenuButton, IonPage,
   IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar
 } from '@ionic/react';
 import ExploreContainer from '../../components/ExploreContainer';
 import '../Tab2.css';
 import { useState } from 'react';
+import {
+  checkmarkCircleOutline, closeCircleOutline, constructOutline, createOutline, hourglassOutline,
+  playForwardOutline, receiptOutline, waterOutline
+} from 'ionicons/icons';
 
 const Inspection: React.FC = () => {
 
@@ -43,71 +47,79 @@ const Inspection: React.FC = () => {
           </IonCardHeader>
           <IonCardContent>Card Content</IonCardContent>
         </IonCard>
-
-        <IonActionSheet
-          isOpen={selectListVisible}
-          onDidDismiss={closeInspectionMenu}
-          cssClass="my-action-sheet"
-          buttons={[
-            {
-              text: 'In Progress',
-              handler: () => {
-                console.log('In Progress is selected');
-                close();
+        <>
+          <IonActionSheet
+            isOpen={selectListVisible}
+            onDidDismiss={closeInspectionMenu}
+            cssClass="my-action-sheet"
+            buttons={[
+              {
+                text: 'In Progress',
+                handler: () => {
+                  console.log('In Progress is selected');
+                  close();
+                },
+                icon: constructOutline,
               },
-            },
-            {
-              text: 'Inspection',
-              handler: () => {
-                console.log('Inspection is selected');
-                close();
+              {
+                text: 'Inspection',
+                handler: () => {
+                  console.log('Inspection is selected');
+                  close();
+                },
+                icon: createOutline,
               },
-            },
-            {
-              text: 'On Hold',
-              handler: () => {
-                console.log('On Hold is selected');
-                close();
+              {
+                text: 'On Hold',
+                handler: () => {
+                  console.log('On Hold is selected');
+                  close();
+                },
+                icon: hourglassOutline,
               },
-            },
-            {
-              text: 'Quick Fix',
-              handler: () => {
-                console.log('Quick Fix is selected');
-                close();
+              {
+                text: 'Quick Fix',
+                handler: () => {
+                  console.log('Quick Fix is selected');
+                  close();
+                },
+                icon: playForwardOutline,
               },
-            },
-            {
-              text: 'Wash',
-              handler: () => {
-                console.log('Wash is selected');
-                close();
+              {
+                text: 'Wash',
+                handler: () => {
+                  console.log('Wash is selected');
+                  close();
+                },
+                icon: waterOutline,
               },
-            },
-            {
-              text: 'Done',
-              handler: () => {
-                console.log('Done is selected');
-                close();
+              {
+                text: 'Done',
+                handler: () => {
+                  console.log('Done is selected');
+                  close();
+                },
+                icon: checkmarkCircleOutline,
               },
-            },
-            {
-              text: 'Billed',
-              handler: () => {
-                console.log('Billed is selected');
-                close();
+              {
+                text: 'Billed',
+                handler: () => {
+                  console.log('Billed is selected');
+                  close();
+                },
+                icon: receiptOutline,
               },
-            },
-            {
-              text: 'Cancelled',
-              handler: () => {
-                console.log('Cancelled is selected');
-                close();
-              },
-            }
-          ]}
-        />
-
+              {
+                text: 'Cancelled',
+                handler: () => {
+                  console.log('Cancelled is selected');
+                  close();
+                },
+                icon: closeCircleOutline,
+              }
+            ]}
+          />
+        </>
       </IonContent>
     </IonPage>
   );

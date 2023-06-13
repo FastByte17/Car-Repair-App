@@ -10,7 +10,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { clipboard, clipboardOutline, ellipse, logInOutline, receiptOutline, square, timerOutline, triangle } from 'ionicons/icons';
+import { clipboardOutline, logInOutline, readerOutline, timerOutline } from 'ionicons/icons';
 
 import Login from './pages/Login';
 import Inspection from './pages/Inspection/Inspection';
@@ -83,7 +83,7 @@ const App: React.FC = () => (
           </IonTabButton>
 
           <IonTabButton tab="summary" href="/summary">
-            <IonIcon aria-hidden="true" icon={receiptOutline} />
+            <IonIcon aria-hidden="true" icon={readerOutline} />
             <IonLabel>Summary</IonLabel>
           </IonTabButton>
 
