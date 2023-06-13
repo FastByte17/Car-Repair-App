@@ -2,13 +2,14 @@ import {
   IonActionSheet,
   IonButtons,
   IonCard, IonCardContent, IonCardHeader, IonCardSubtitle,
-  IonCardTitle, IonCol, IonContent, IonHeader, IonIcon, IonList, IonMenu, IonMenuButton, IonPage,
+  IonCardTitle, IonCol, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonList, IonMenu, IonMenuButton, IonPage,
   IonRow, IonSelect, IonSelectOption, IonTitle, IonToolbar
 } from '@ionic/react';
 import ExploreContainer from '../../components/ExploreContainer';
 import '../Tab2.css';
 import { useState } from 'react';
 import {
+  add,
   checkmarkCircleOutline, closeCircleOutline, constructOutline, createOutline, hourglassOutline,
   playForwardOutline, receiptOutline, waterOutline
 } from 'ionicons/icons';
@@ -120,6 +121,13 @@ const Inspection: React.FC = () => {
             ]}
           />
         </>
+
+        <IonFab slot='fixed' vertical='bottom' horizontal='end'>
+          <IonFabButton>
+            <IonIcon icon={add}></IonIcon>
+          </IonFabButton>
+        </IonFab>
+
       </IonContent>
     </IonPage>
   );
