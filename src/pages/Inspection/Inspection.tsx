@@ -5,6 +5,7 @@ import {
   IonButtons,
   IonCard, IonCardContent, IonCardHeader, IonCardSubtitle,
   IonCardTitle, IonCol, IonContent, IonFab, IonFabButton,
+  IonGrid,
   IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList,
   IonMenu, IonMenuButton, IonPage, IonPopover, IonRow, IonSelect,
   IonSelectOption, IonTextarea, IonTitle, IonToolbar
@@ -63,14 +64,68 @@ const Inspection: React.FC = () => {
           </IonToolbar>
         </IonHeader>
 
-        <h1>Entered</h1>
-        <IonCard color="light" button={true} onClick={inspectionMenu}>
-          <IonCardHeader>
-            <IonCardTitle>Card Title</IonCardTitle>
-            <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-          </IonCardHeader>
-          <IonCardContent>Card Content</IonCardContent>
-        </IonCard>
+        <IonGrid>
+          <IonRow>
+
+            <IonCol>
+              <h1>Entered</h1>
+              <IonCard color="light" button={true} onClick={inspectionMenu}>
+                <IonCardHeader>
+                  <IonCardTitle>Card Title</IonCardTitle>
+                  <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
+                </IonCardHeader>
+                <IonCardContent>Card Content</IonCardContent>
+              </IonCard>
+            </IonCol>
+
+            <IonCol>
+              <h1>In Progress</h1>
+              <IonCard color="warning" button={true} onClick={inspectionMenu}>
+                <IonCardHeader>
+                  <IonCardTitle>Card Title</IonCardTitle>
+                  <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
+                </IonCardHeader>
+                <IonCardContent>Card Content</IonCardContent>
+              </IonCard>
+            </IonCol>
+
+            <IonCol>
+              <h1>On Hold</h1>
+              <IonCard color="danger" button={true} onClick={inspectionMenu}>
+                <IonCardHeader>
+                  <IonCardTitle>Card Title</IonCardTitle>
+                  <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
+                </IonCardHeader>
+                <IonCardContent>Card Content</IonCardContent>
+              </IonCard>
+            </IonCol>
+
+            <IonCol>
+              <h1>Car Wash</h1>
+              <IonCard color="secondary" button={true} onClick={inspectionMenu}>
+                <IonCardHeader>
+                  <IonCardTitle>Card Title</IonCardTitle>
+                  <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
+                </IonCardHeader>
+                <IonCardContent>Card Content</IonCardContent>
+              </IonCard>
+            </IonCol>
+
+            <IonCol>
+              <h1>Done</h1>
+              <IonCard color="success" button={true} onClick={inspectionMenu}>
+                <IonCardHeader>
+                  <IonCardTitle>Card Title</IonCardTitle>
+                  <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
+                </IonCardHeader>
+                <IonCardContent>Card Content</IonCardContent>
+              </IonCard>
+            </IonCol>
+
+          </IonRow>
+        </IonGrid>
+
+
         <>
           <IonActionSheet
             isOpen={selectListVisible}
