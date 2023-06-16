@@ -1,0 +1,24 @@
+.card-row {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    padding: 0 10px;
+}
+
+ion-col {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+}
+
+ion-card {
+    width: 100%;
+}
