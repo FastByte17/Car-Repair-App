@@ -65,15 +65,15 @@ const Inspection: React.FC = () => {
         </IonHeader>
 
         <>
-          <IonGrid fixed={true}>
-            <IonRow className="card-row">
+          <IonGrid fixed={true} className='grid'>
+            <IonRow className="card-row" >
 
               <IonCol>
                 <div className='card-container'>
-                  <h1>In Progress</h1>
+                  <p>In Progress</p>
                   <IonCard color="warning" button={true} onClick={inspectionMenu}>
                     <IonCardHeader>
-                      <IonCardTitle>Card Title</IonCardTitle>
+                      <IonCardTitle className='cardTitle'>Card Title</IonCardTitle>
                       <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>Card Content</IonCardContent>
@@ -83,10 +83,10 @@ const Inspection: React.FC = () => {
 
               <IonCol>
                 <div className='card-container'>
-                  <h1>On Hold</h1>
+                  <p>On Hold</p>
                   <IonCard color="danger" button={true} onClick={inspectionMenu}>
                     <IonCardHeader>
-                      <IonCardTitle>Card Title</IonCardTitle>
+                      <IonCardTitle className='cardTitle'>Card Title</IonCardTitle>
                       <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>Card Content</IonCardContent>
@@ -96,10 +96,10 @@ const Inspection: React.FC = () => {
 
               <IonCol>
                 <div className='card-container'>
-                  <h1>Car Wash</h1>
+                  <p>Car Wash</p>
                   <IonCard color="secondary" button={true} onClick={inspectionMenu}>
                     <IonCardHeader>
-                      <IonCardTitle>Card Title</IonCardTitle>
+                      <IonCardTitle className='cardTitle'>Card Title</IonCardTitle>
                       <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>Card Content</IonCardContent>
@@ -109,10 +109,10 @@ const Inspection: React.FC = () => {
 
               <IonCol>
                 <div className='card-container'>
-                  <h1>Done</h1>
+                  <p>Done</p>
                   <IonCard color="success" button={true} onClick={inspectionMenu}>
                     <IonCardHeader>
-                      <IonCardTitle>Card Title</IonCardTitle>
+                      <IonCardTitle className='cardTitle'>Card Title</IonCardTitle>
                       <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
                     </IonCardHeader>
                     <IonCardContent>Card Content</IonCardContent>

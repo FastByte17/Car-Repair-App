@@ -1,24 +1,24 @@
 .card-row {
-    display: flex;
-    overflow-x: auto;
-    padding-bottom: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
 }
 
 .card-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     text-align: center;
-    flex: 1;
-    padding: 0 10px;
+    padding: 1em;
 }
 
-ion-col {
-    display: flex;
-    flex: 1;
-    min-width: 0;
+.cardTitle,
+p {
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
 }
 
-ion-card {
-    width: 100%;
+@media only screen and (max-width: 780px) {
+    .card-container {
+        padding: .1em;
+    }
+
+    .card-row {
+        overflow-x: scroll;
+    }
 }
