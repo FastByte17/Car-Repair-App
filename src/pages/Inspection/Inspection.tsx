@@ -16,6 +16,7 @@ import { useState } from 'react';
 import {
   add,
   checkmarkCircleOutline, closeCircleOutline, constructOutline, createOutline, hourglassOutline,
+  informationCircleOutline,
   playForwardOutline, receiptOutline, waterOutline
 } from 'ionicons/icons';
 
@@ -190,6 +191,14 @@ const Inspection: React.FC = () => {
             onDidDismiss={closeInspectionMenu}
             cssClass="my-action-sheet"
             buttons={[
+              {
+                text: 'History',
+                handler: () => {
+                  console.log('History is selected');
+                  close();
+                },
+                icon: informationCircleOutline,
+              },
               {
                 text: 'In Progress',
                 handler: () => {
