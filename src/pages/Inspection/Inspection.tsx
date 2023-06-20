@@ -71,6 +71,7 @@ const Inspection: React.FC = () => {
               <IonCol>
                 <div className='card-container'>
                   <p>In Progress</p>
+                  {/* Make a for loop for adding cards of vehicles */}
                   <IonCard color="warning" button={true} onClick={inspectionMenu}>
                     <IonCardHeader>
                       <IonCardTitle className='cardTitle'>Card Title</IonCardTitle>
