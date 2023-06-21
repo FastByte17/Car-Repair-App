@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "start:dev": "nodemon index.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -15,7 +16,12 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
-    "pg": "^8.11.0",
-    "sqlite3": "^5.1.6"
+    "nodemon": "^2.0.22",
+    "sqlite3": "^5.1.6",
+    "zod": "^3.21.4"
+  },
+  "type": "module",
+  "devDependencies": {
+    "prisma": "^4.16.0"
   }
 }
