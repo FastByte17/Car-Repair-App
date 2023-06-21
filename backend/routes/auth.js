@@ -1,24 +1,15 @@
 import { Router } from 'express';
-import prisma from '../prisma/client.js';
 import { validator } from '../middleware/validate.js';
-import { registerSchema } from '../utils/validation.js';
+import { registerSchema, loginSchema } from '../utils/validation.js';
+import { register, login, protect } from '../controller/auth.js'
 
 const router = Router()
+router.use('/api', protect)
 
 
-router.route('/register').post(validator(registerSchema), async (req, res) => {
-  try {
-    delete req.body.confirmPassword
-    const newUser = await prisma.user.create({
-      data: {
-        ...req.body,
-      }
-    })
-    res.json(newUser);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-})
+router.route('/register').post(validator(registerSchema), register)
+
+router.route('/login').post(validator(loginSchema), login)
 
 
 export default router;

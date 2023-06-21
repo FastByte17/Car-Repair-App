@@ -69,3 +69,15 @@ export const registerSchema = z
             })
         }
     })
+
+export const loginSchema = z.object({
+    body: z.object({
+        email,
+        password: z
+            .string({
+                required_error: 'password is required',
+                invalid_type_error: 'password must be a string',
+            })
+            .trim(),
+    }),
+})
