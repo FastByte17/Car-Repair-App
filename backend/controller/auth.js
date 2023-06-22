@@ -66,12 +66,18 @@ export const register = async (req, res) => {
         bcrypt.hash(req.body.password, 8, async (err, hash) => {
             if (err) throw Error(err)
             const data = {
-                ...req.body, password: hash,
+                ...req.body, password: hash, role: process.env.ADMIN_LIST?.includes(req.body.email) ? 'ADMIN' : (process.env.MANAGER_LIST?.includes(req.body.email) ? 'MANAGER' : 'EMPLOYEE')
             }
-            const newUser = await prisma.user.create({ data })
-            const token = newToken(newUser)
-            delete newUser?.password
-            res.status(201).json({ token, newUser });
+
+            try {
+                const newUser = await prisma.user.create({ data })
+                const token = newToken(newUser)
+                delete newUser?.password
+                res.status(201).json({ token, newUser });
+            } catch (error) {
+                res.status(500).json({ message: error.message });
+            }
+
         });
 
     } catch (err) {

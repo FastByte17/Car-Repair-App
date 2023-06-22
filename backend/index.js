@@ -17,6 +17,7 @@ app.use("/", auth)
 app.use("/api/v1", protect)
 app.use("/api/v1/user", user)
 
+
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
