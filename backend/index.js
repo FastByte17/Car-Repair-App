@@ -3,6 +3,8 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import auth from './routes/auth.js';
 import user from './routes/user.js';
+import { protect } from './controller/auth.js'
+
 
 const app = express()
 const port = process.env.PORT || 3000;
@@ -12,6 +14,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use("/", auth)
+app.use("/api/v1", protect)
 app.use("/api/v1/user", user)
 
 app.listen(port, () => {

@@ -3,19 +3,18 @@ import bcrypt from 'bcrypt';
 import prisma from '../prisma/client.js';
 
 export const newToken = (user) => {
-    return jwt.sign({ id: user.id }, Buffer.from(process.env.JWT_SECRET, 'base64'), {
-        expiresIn: process.env.JWT_SECRET_EXP,
+    return jwt.sign({ id: user.id }, 'secret', {
+        expiresIn: '1hr',
     })
 }
-export const verifyToken = (token) => {
-    return jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
-        if (error) {
-            return res.status(401).send({
-                message: error?.message,
-            });
-        }
-        return decoded
+export const verifyToken = async (token) => {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, 'secret', (err, decoded) => {
+            if (err) return reject(err)
+            return resolve(decoded)
+        })
     })
+
 }
 
 export const checkPassword = (password, passwordHash) => {
@@ -37,16 +36,15 @@ export const protect = async (req, res, next) => {
         return res.status(401).json({ message: 'invalid token' })
     }
 
-    const token = bearer.split(' ')[1].trim()
+    const token = bearer.split('Bearer ')[1].trim()
     let payload
     try {
         payload = await verifyToken(token)
     } catch (e) {
         return res
             .status(401)
-            .json({ message: 'invalid token, token might have expired' })
+            .json({ message: e?.message ?? 'invalid token, token might have expired' })
     }
-
     const user = await prisma.user.findFirst({
         where: {
             id: payload.id,
