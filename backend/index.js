@@ -3,6 +3,8 @@ import * as dotenv from 'dotenv';
 import cors from 'cors';
 import auth from './routes/auth.js';
 import user from './routes/user.js';
+import task from './routes/task.js'
+import { errorHandler } from './middleware/errorHandler.js'
 import { protect } from './controller/auth.js'
 
 
@@ -18,6 +20,9 @@ app.use("/api/v1", protect)
 app.use("/api/v1/user", user)
 app.use("/api/v1/task", task)
 
+
+
+app.use(errorHandler)
 
 
 app.listen(port, () => {

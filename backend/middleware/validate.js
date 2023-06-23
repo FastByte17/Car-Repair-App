@@ -1,5 +1,5 @@
 
-export const validator = (schema) => async (req, _res, next) => {
+export const validator = (schema) => async (req, res, next) => {
     try {
         await schema.parseAsync({
             body: req.body,
@@ -9,6 +9,7 @@ export const validator = (schema) => async (req, _res, next) => {
 
         return next()
     } catch (error) {
-        return next(error?.issues?.length > 0 ? error.issues[0].message : "bad request")
+        return next(error)
+
     }
 }

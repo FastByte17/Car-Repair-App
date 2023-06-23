@@ -48,6 +48,48 @@ const role = z.nativeEnum({ EMPLOYEE: "EMPLOYEE", MANAGER: "MANAGER", ADMIN: "AD
     required_error: 'role is required',
 })
 
+const vehReg = z
+    .string({
+        required_error: 'vehicle registration is required',
+        invalid_type_error: 'vehicle registration must be a string',
+    }).min(7, { message: 'vehicle registration must be 6 characters long' }).max(7, { message: 'vehicle registration must be 6 characters long' })
+    .trim()
+    .regex(/^[a-zA-Z0-9-]+$/, { message: 'vehicle registration must be alphanumeric' })
+
+const note = z
+    .string({
+        required_error: 'note is required',
+        invalid_type_error: 'note be a string',
+    }).max(255, { message: 'note max limit!' })
+
+const images = z
+    .array(
+        z.string({
+            required_error: 'images is required',
+            invalid_type_error: 'images must be a string',
+        })
+    ).optional()
+const userId = z
+    .string({
+        required_error: 'userID is required',
+        invalid_type_error: 'userID  must be a string',
+    })
+    .trim()
+
+const assigned = z
+    .string({
+        required_error: 'assigned is required',
+        invalid_type_error: 'assigned  must be a string',
+    })
+    .trim()
+const assignee = z
+    .string({
+        required_error: 'assignee is required',
+        invalid_type_error: 'assignee  must be a string',
+    })
+    .trim()
+
+
 
 export const registerSchema = z
     .object({
@@ -79,5 +121,16 @@ export const loginSchema = z.object({
                 invalid_type_error: 'password must be a string',
             })
             .trim(),
+    }),
+})
+
+
+export const createTaskSchema = z.object({
+    body: z.object({
+        vehReg,
+        note,
+        images,
+        assigned,
+        assignee
     }),
 })

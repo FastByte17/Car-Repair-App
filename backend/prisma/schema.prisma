@@ -17,25 +17,28 @@ enum Role {
 }
 
 model User {
-  id          String   @id @default(uuid())
-  email       String   @unique
-  firstName   String
-  lastName    String   @unique
-  password    String
-  phoneNumber String   @unique
-  role        Role     @default(EMPLOYEE)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  Task        Task[]
+  id            String   @id @default(uuid())
+  email         String   @unique
+  firstName     String
+  lastName      String   @unique
+  password      String
+  phoneNumber   String   @unique
+  role          Role     @default(EMPLOYEE)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  MyTasks       Task[]   @relation("assigned")
+  AssignedTasks Task[]   @relation("assignee")
 }
 
 model Task {
-  id        String   @id @default(uuid())
-  vehReg    String   @db.VarChar(50)
-  note      String
-  images    String[]
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String
+  id         String   @id @default(uuid())
+  vehReg     String   @db.VarChar(50)
+  note       String
+  images     String[] @default([])
+  assigned   User     @relation("assigned", fields: [assignedId], references: [id])
+  assignee   User     @relation("assignee", fields: [assigneeId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  assignedId String
+  assigneeId String
 }
