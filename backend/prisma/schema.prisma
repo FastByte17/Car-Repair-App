@@ -26,4 +26,16 @@ model User {
   role        Role     @default(EMPLOYEE)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  Task        Task[]
+}
+
+model Task {
+  id        String   @id @default(uuid())
+  vehReg    String   @db.VarChar(50)
+  note      String
+  images    String[]
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
 }
