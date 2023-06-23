@@ -16,6 +16,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", auth)
 app.use("/api/v1", protect)
 app.use("/api/v1/user", user)
+app.use("/api/v1/task", task)
+
 
 
 app.listen(port, () => {
