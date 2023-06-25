@@ -56,6 +56,7 @@ const vehReg = z
     .trim()
     .regex(/^[a-zA-Z0-9-]+$/, { message: 'vehicle registration must be alphanumeric' })
 
+
 const note = z
     .string({
         required_error: 'note is required',
@@ -88,6 +89,9 @@ const assignee = z
         invalid_type_error: 'assignee  must be a string',
     })
     .trim()
+const state = z.nativeEnum({ IN_PROGRESS: "IN_PROGRESS", ON_HOLD: "ON_HOLD", CAR_WASH: "CAR_WASH", DONE: "DONE" }, {
+    required_error: 'state is required',
+})
 
 
 
@@ -130,7 +134,19 @@ export const createTaskSchema = z.object({
         vehReg,
         note,
         images,
+        state,
         assigned,
         assignee
+    }),
+})
+
+export const updateTaskSchema = z.object({
+    body: z.object({
+        vehReg: vehReg.optional(),
+        note: note.optional(),
+        images: images.optional(),
+        state: state.optional(),
+        assigned: assigned.optional(),
+        assignee: assigned.optional(),
     }),
 })

@@ -1,22 +1,34 @@
 import prisma from '../prisma/client.js';
-import SMB2 from '@marsaud/smb2';
-import ip from 'ip'
+
+export const findAll = async (_req, res) => {
+    try {
+        const tasks = await prisma.task.findMany()
+        res.status(201).json({ data: tasks });
+    } catch (error) {
+        res.status(401).json({ message: error.message })
+    }
+}
+
+export const update = async (req, res) => {
+    try {
+        const taskId = req.params.taskId
+        const updatedTask = await prisma.task.update({
+            where: {
+                id: taskId
+            },
+            data: {
+                ...req.body
+            }
+        })
+        res.status(201).json({ data: updatedTask });
+    } catch (error) {
+        res.status(401).json({ message: error.message })
+    }
+}
 
 export const create = async (req, res) => {
     try {
-        const nasConnection = new SMB2({
-            share: '\\\\ \\test_share',
-            domain: 'localhost',
-            username: 'Nabeel Hussain',
-            password: '',
-        });
-
-
-        nasConnection.readdir('.', (err, files) => {
-            if (err) throw err;
-            console.log(files);
-        });
-        /*const { assignee, assigned } = req.body
+        const { assignee, assigned } = req.body
         const baseUrl = process.env.BASE_URL
 
         const images = req.files.map(file => baseUrl + file.destination.replace('./uploads', '') + file.filename)
@@ -46,7 +58,7 @@ export const create = async (req, res) => {
             }
         })
 
-        res.status(201).json({ data: newTask });*/
+        res.status(201).json({ data: newTask });
     } catch (error) {
         res.status(401).json({ message: error.message })
 

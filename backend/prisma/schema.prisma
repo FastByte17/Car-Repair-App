@@ -16,6 +16,13 @@ enum Role {
   ADMIN
 }
 
+enum State {
+  IN_PROGRESS
+  ON_HOLD
+  CAR_WASH
+  DONE
+}
+
 model User {
   id            String   @id @default(uuid())
   email         String   @unique
@@ -35,6 +42,7 @@ model Task {
   vehReg     String   @db.VarChar(50)
   note       String
   images     String[] @default([])
+  state      State    @default(IN_PROGRESS)
   assigned   User     @relation("assigned", fields: [assignedId], references: [id])
   assignee   User     @relation("assignee", fields: [assigneeId], references: [id])
   createdAt  DateTime @default(now())

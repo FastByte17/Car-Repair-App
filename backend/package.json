@@ -4,10 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "start:dev": "nodemon index.js"
+    "start:dev": "nodemon index.js -- openssl-legacy-provider start"
   },
   "dependencies": {
-    "@marsaud/smb2": "^0.18.0",
     "@prisma/client": "^4.16.0",
     "bcrypt": "^5.1.0",
     "cookie-parser": "~1.4.4",
@@ -23,8 +22,8 @@
     "multer": "^1.4.5-lts.1",
     "nodemon": "^2.0.22",
     "passport": "^0.6.0",
-    "smb2": "^0.2.11",
     "uuidv4": "^6.2.13",
+    "v9u-smb2": "^1.0.6",
     "zod": "^3.21.4"
   },
   "type": "module",
