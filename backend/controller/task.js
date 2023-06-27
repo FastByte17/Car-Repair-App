@@ -2,7 +2,25 @@ import prisma from '../prisma/client.js';
 
 export const findAll = async (_req, res) => {
     try {
-        const tasks = await prisma.task.findMany()
+        const tasks = await prisma.task.findMany({
+            include: {
+                assigned: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        password: false,
+                    }
+                }, assignee: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        password: false
+                    }
+                }
+            }
+        })
         res.status(201).json({ data: tasks });
     } catch (error) {
         res.status(401).json({ message: error.message })

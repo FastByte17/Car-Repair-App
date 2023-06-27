@@ -12,16 +12,19 @@ import {
 } from '@ionic/react';
 import ExploreContainer from '../../components/ExploreContainer';
 import '../Tab2.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   add,
   checkmarkCircleOutline, closeCircleOutline, constructOutline, createOutline, hourglassOutline,
   informationCircleOutline,
   playForwardOutline, receiptOutline, waterOutline
 } from 'ionicons/icons';
+import { useQuery } from '@tanstack/react-query';
+import { fetchTasks } from '../../api'
+import { State, Tasks } from '../../types'
 
 const Inspection: React.FC = () => {
-
+  const { data, status, error } = useQuery<Tasks, Error>({ queryKey: ['items'], queryFn: fetchTasks });
   const [selectListVisible, setSelectListVisible] = useState(false);
   const [showPopover, setShowPopover] = useState(false);
   const [regNumber, setRegNumber] = useState('');
@@ -51,6 +54,9 @@ const Inspection: React.FC = () => {
     setSelectListVisible(false);
   };
 
+
+
+
   return (
     <IonPage>
       <IonHeader>
@@ -65,125 +71,72 @@ const Inspection: React.FC = () => {
           </IonToolbar>
         </IonHeader>
 
-        <>
-          <IonGrid fixed={true} className='grid'>
-            <IonRow className="card-row" >
+        {status === 'error' && <p>Error fetching data: {error?.message}</p>}
+        {status === 'loading' && <p>Loading...</p>}
+        {status === 'success' &&
+          <>
+            <IonGrid fixed={true} className='grid'>
+              <IonRow className="card-row" >
 
-              <IonCol>
-                <div className='card-container'>
-                  <p>In Progress</p>
-                  {/* Make a for loop for adding cards of vehicles */}
-                  <IonCard color="warning" button={true} onClick={inspectionMenu}>
-                    <IonCardHeader>
-                      <IonCardTitle className='cardTitle'>Card Title</IonCardTitle>
-                      <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-                    </IonCardHeader>
-                    <IonCardContent>Card Content</IonCardContent>
-                  </IonCard>
-                </div>
-              </IonCol>
+                <IonCol>
+                  <div className='card-container'>
+                    <p>In Progress</p>
+                    {data.filter(task => task.state === State.IN_PROGRESS).map((item) =>
+                      < IonCard color="warning" button={true} onClick={inspectionMenu} key={item.id}>
+                        <IonCardHeader>
+                          <IonCardTitle className='cardTitle'>{item.vehReg}</IonCardTitle>
+                          <IonCardSubtitle>Assigned to: {item.assigned.lastName}</IonCardSubtitle>
+                        </IonCardHeader>
+                        <IonCardContent>{item.note}</IonCardContent>
+                      </IonCard>)}
+                  </div>
+                </IonCol>
 
-              <IonCol>
-                <div className='card-container'>
-                  <p>On Hold</p>
-                  <IonCard color="danger" button={true} onClick={inspectionMenu}>
-                    <IonCardHeader>
-                      <IonCardTitle className='cardTitle'>Card Title</IonCardTitle>
-                      <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-                    </IonCardHeader>
-                    <IonCardContent>Card Content</IonCardContent>
-                  </IonCard>
-                </div>
-              </IonCol>
+                <IonCol>
+                  <div className='card-container'>
+                    <p>On Hold</p>
+                    {data.filter(task => task.state === State.ON_HOLD).map((item) =>
+                      < IonCard color="danger" button={true} onClick={inspectionMenu} key={item.id}>
+                        <IonCardHeader>
+                          <IonCardTitle className='cardTitle'>{item.vehReg}</IonCardTitle>
+                          <IonCardSubtitle>Assigned to: {item.assigned.lastName}</IonCardSubtitle>
+                        </IonCardHeader>
+                        <IonCardContent>{item.note}</IonCardContent>
+                      </IonCard>)}
+                  </div>
+                </IonCol>
 
-              <IonCol>
-                <div className='card-container'>
-                  <p>Car Wash</p>
-                  <IonCard color="secondary" button={true} onClick={inspectionMenu}>
-                    <IonCardHeader>
-                      <IonCardTitle className='cardTitle'>Card Title</IonCardTitle>
-                      <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-                    </IonCardHeader>
-                    <IonCardContent>Card Content</IonCardContent>
-                  </IonCard>
-                </div>
-              </IonCol>
+                <IonCol>
+                  <div className='card-container'>
+                    <p>Car Wash</p>
+                    {data.filter(task => task.state === State.CAR_WASH).map((item) =>
+                      < IonCard color="secondary" button={true} onClick={inspectionMenu} key={item.id}>
+                        <IonCardHeader>
+                          <IonCardTitle className='cardTitle'>{item.vehReg}</IonCardTitle>
+                          <IonCardSubtitle>Assigned to: {item.assigned.lastName}</IonCardSubtitle>
+                        </IonCardHeader>
+                        <IonCardContent>{item.note}</IonCardContent>
+                      </IonCard>)}
+                  </div>
+                </IonCol>
 
-              <IonCol>
-                <div className='card-container'>
-                  <p>Done</p>
-                  <IonCard color="success" button={true} onClick={inspectionMenu}>
-                    <IonCardHeader>
-                      <IonCardTitle className='cardTitle'>Card Title</IonCardTitle>
-                      <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-                    </IonCardHeader>
-                    <IonCardContent>Card Content</IonCardContent>
-                  </IonCard>
-                </div>
-              </IonCol>
+                <IonCol>
+                  <div className='card-container'>
+                    <p>Done</p>
+                    {data.filter(task => task.state === State.DONE).map((item) =>
+                      < IonCard color="success" button={true} onClick={inspectionMenu} key={item.id}>
+                        <IonCardHeader>
+                          <IonCardTitle className='cardTitle'>{item.vehReg}</IonCardTitle>
+                          <IonCardSubtitle>Assigned to: {item.assigned.lastName}</IonCardSubtitle>
+                        </IonCardHeader>
+                        <IonCardContent>{item.note}</IonCardContent>
+                      </IonCard>)}
+                  </div>
+                </IonCol>
 
-            </IonRow>
-
-            {/* <IonRow>
-
-              <IonCol size="12" size-md="6" size-lg="4">
-                <h1>Entered</h1>
-                <IonCard color="light" button={true} onClick={inspectionMenu}>
-                  <IonCardHeader>
-                    <IonCardTitle>Card Title</IonCardTitle>
-                    <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-                  </IonCardHeader>
-                  <IonCardContent>Card Content</IonCardContent>
-                </IonCard>
-              </IonCol>
-
-              <IonCol size="12" size-md="6" size-lg="4">
-                <h1>In Progress</h1>
-                <IonCard color="warning" button={true} onClick={inspectionMenu}>
-                  <IonCardHeader>
-                    <IonCardTitle>Card Title</IonCardTitle>
-                    <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-                  </IonCardHeader>
-                  <IonCardContent>Card Content</IonCardContent>
-                </IonCard>
-              </IonCol>
-
-              <IonCol size="12" size-md="6" size-lg="4">
-                <h1>On Hold</h1>
-                <IonCard color="danger" button={true} onClick={inspectionMenu}>
-                  <IonCardHeader>
-                    <IonCardTitle>Card Title</IonCardTitle>
-                    <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-                  </IonCardHeader>
-                  <IonCardContent>Card Content</IonCardContent>
-                </IonCard>
-              </IonCol>
-
-              <IonCol size="12" size-md="6" size-lg="4">
-                <h1>Car Wash</h1>
-                <IonCard color="secondary" button={true} onClick={inspectionMenu}>
-                  <IonCardHeader>
-                    <IonCardTitle>Card Title</IonCardTitle>
-                    <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-                  </IonCardHeader>
-                  <IonCardContent>Card Content</IonCardContent>
-                </IonCard>
-              </IonCol>
-
-              <IonCol size="12" size-md="6" size-lg="4">
-                <h1>Done</h1>
-                <IonCard color="success" button={true} onClick={inspectionMenu}>
-                  <IonCardHeader>
-                    <IonCardTitle>Card Title</IonCardTitle>
-                    <IonCardSubtitle>Card Subtitle</IonCardSubtitle>
-                  </IonCardHeader>
-                  <IonCardContent>Card Content</IonCardContent>
-                </IonCard>
-              </IonCol>
-
-            </IonRow> */}
-          </IonGrid>
-        </>
+              </IonRow>
+            </IonGrid>
+          </>}
 
         <>
           <IonActionSheet
@@ -314,7 +267,7 @@ const Inspection: React.FC = () => {
         </IonPopover>
 
       </IonContent>
-    </IonPage>
+    </IonPage >
   );
 };
 
