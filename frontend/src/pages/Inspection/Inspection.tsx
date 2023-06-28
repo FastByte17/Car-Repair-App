@@ -1,43 +1,65 @@
 import {
   IonActionSheet,
-  IonAlert,
-  IonButton,
-  IonButtons,
   IonCard, IonCardContent, IonCardHeader, IonCardSubtitle,
   IonCardTitle, IonCol, IonContent, IonFab, IonFabButton,
   IonGrid,
-  IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList,
-  IonMenu, IonMenuButton, IonPage, IonPopover, IonRow, IonSelect,
-  IonSelectOption, IonTextarea, IonTitle, IonToolbar
+  IonHeader, IonIcon,
+  IonPage, IonPopover, IonRow, IonTitle, IonToolbar
 } from '@ionic/react';
-import ExploreContainer from '../../components/ExploreContainer';
+import {
+  FormLabel,
+  Input,
+  FormErrorMessage,
+  Select,
+  Textarea,
+  Button,
+  Box,
+  Flex,
+} from '@chakra-ui/react'
 import '../Tab2.css';
-import { useState, useEffect } from 'react';
+import { useState, FormEvent } from 'react';
 import {
   add,
   checkmarkCircleOutline, closeCircleOutline, constructOutline, createOutline, hourglassOutline,
   informationCircleOutline,
   playForwardOutline, receiptOutline, waterOutline
 } from 'ionicons/icons';
-import { useQuery } from '@tanstack/react-query';
-import { fetchTasks } from '../../api'
-import { State, Tasks } from '../../types'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchTasks, fetchWorkers, fetchCurrentUser, addTask } from '../../api'
+import { State, Tasks, TaskForm, Worker, User, Role, Task } from '../../types'
+
 
 const Inspection: React.FC = () => {
+  const queryClient = useQueryClient();
   const { data, status, error } = useQuery<Tasks, Error>({ queryKey: ['items'], queryFn: fetchTasks });
+  const { data: user, status: userStatus, error: userError } = useQuery<User, Error>({ queryKey: ['user'], queryFn: fetchCurrentUser });
+  const { data: workers, status: workersStatus, error: workersError } = useQuery<Worker[], Error>({ queryKey: ['workers'], queryFn: fetchWorkers });
+  const { mutate, isError, error: addTaskError } = useMutation<Task, Error, FormData, unknown>({ mutationKey: ['addTask'], mutationFn: addTask });
   const [selectListVisible, setSelectListVisible] = useState(false);
   const [showPopover, setShowPopover] = useState(false);
-  const [regNumber, setRegNumber] = useState('');
-  const [selectedOption, setSelectedOption] = useState('');
-  const [notes, setNotes] = useState('');
+  const [values, setValues] = useState<TaskForm>({
+    vehReg: '',
+    note: '',
+    images: [],
+    assigned: '',
+  });
 
-  const handleSave = () => {
-    // Perform any necessary actions with the entered data
-    console.log('Vehicle Reg Number:', regNumber);
-    console.log('Selected Option:', selectedOption);
-    console.log('Notes:', notes);
-
+  const handleSave = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     // Close the alert
+    const task = new FormData()
+    const assigned = (user && user.role === Role.EMPLOYEE) ? user.id : values.assigned
+    task.append('vehReg', values.vehReg)
+    task.append('note', values.note)
+    values.images.length > 0 && Array.from(values.images).forEach((file, i) => {
+      task.append('images', file, file.name)
+    })
+    task.append('assigned', assigned)
+    mutate(task, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['items'] })
+      }
+    })
     setShowPopover(false);
   };
 
@@ -230,43 +252,48 @@ const Inspection: React.FC = () => {
           isOpen={showPopover}
           onDidDismiss={() => setShowPopover(false)}>
           <IonContent>
-            <IonList>
-              <IonItem>
-                <IonLabel position="stacked">Vehicle Reg Number</IonLabel>
-                <IonInput
-                  value={regNumber}
-                  placeholder="Vehicle Reg Number"
-                  onIonChange={(e) => setRegNumber(e.detail.value!)}
-                ></IonInput>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Select an option:</IonLabel>
-                <IonSelect
-                  value={selectedOption}
-                  placeholder="Select option"
-                  onIonChange={(e) => setSelectedOption(e.detail.value)}>
-                  <IonSelectOption value="Option 1">Option 1</IonSelectOption>
-                  <IonSelectOption value="Option 2">Option 2</IonSelectOption>
-                  <IonSelectOption value="Option 3">Option 3</IonSelectOption>
-                </IonSelect>
-              </IonItem>
-              <IonItem>
-                <IonLabel position="stacked">Notes:</IonLabel>
-                <IonTextarea
-                  value={notes}
-                  onIonChange={(e) => setNotes(e.detail.value!)}
-                ></IonTextarea>
-              </IonItem>
-            </IonList>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px' }}>
-              <IonButton onClick={handleCancel}>Cancel</IonButton>
-              <IonButton onClick={handleSave}>Save</IonButton>
-            </div>
+            <form onSubmit={handleSave}>
+              <Box margin={2}>
+                <FormLabel>Vehicle Reg Number</FormLabel>
+                <Input type='text' placeholder='ABC-123' isRequired={true} value={values.vehReg} onChange={(e) => setValues({ ...values, vehReg: e.target.value })} />
+                <FormErrorMessage>{''}</FormErrorMessage>
+              </Box>
+              <Box margin={2}>
+                <FormLabel mb='8px'>Notes</FormLabel>
+                <Textarea
+                  resize={'none'}
+                  isRequired={true}
+                  value={values.note}
+                  onChange={(e) => setValues({ ...values, note: e.target.value })}
+                  placeholder='Write note'
+                  size='sm'
+                />
+              </Box>
+              <Box>
+                <Input type='file' name='images' onChange={({ target }) =>
+                  setValues({ ...values, images: target.files ? target.files : [] })
+                } />
+                <FormErrorMessage>{''}</FormErrorMessage>
+              </Box>
+              {userStatus === 'success' && (user.role === Role.MANAGER || user.role === Role.ADMIN) && <Box margin={2}>
+                <FormLabel>Assign to Worker:</FormLabel>
+                <Select placeholder='Select worker' value={values.assigned} onChange={(e) => setValues({ ...values, assigned: e.target.value })} isRequired={true}>
+                  {workersStatus === 'success' && workers.map((worker) =>
+                    <option value={worker.id} key={worker.id}>{worker.firstName} {worker.lastName}</option>
+                  )}
+                </Select>
+                <FormErrorMessage>{''}</FormErrorMessage>
+              </Box>}
+              <Flex gap={2} margin={4 | 0}>
+                <Button colorScheme='red' type='button' onClick={handleCancel}>Cancel</Button>
+                <Button colorScheme='blue' type='submit'>Save</Button>
+                {isError && <FormErrorMessage marginTop={2}>{addTaskError.message}</FormErrorMessage>}
+              </Flex>
+            </form>
           </IonContent>
         </IonPopover>
 
-      </IonContent>
+      </IonContent >
     </IonPage >
   );
 };

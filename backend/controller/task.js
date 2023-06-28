@@ -46,16 +46,17 @@ export const update = async (req, res) => {
 
 export const create = async (req, res) => {
     try {
-        const { assignee, assigned } = req.body
+        console.log(req.body);
+        const { assigned } = req.body
         const baseUrl = process.env.BASE_URL
 
         const images = req.files.map(file => baseUrl + file.destination.replace('./uploads', '') + file.filename)
         const newTask = await prisma.task.create({
             data: {
                 ...req.body,
-                assignee: { connect: { id: assignee } },
+                assignee: { connect: { id: req.user.id } },
                 assigned: { connect: { id: assigned } },
-                images
+                images,
             },
             include: {
                 assigned: {

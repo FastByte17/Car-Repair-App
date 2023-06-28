@@ -91,7 +91,7 @@ const assignee = z
     .trim()
 const state = z.nativeEnum({ IN_PROGRESS: "IN_PROGRESS", ON_HOLD: "ON_HOLD", CAR_WASH: "CAR_WASH", DONE: "DONE" }, {
     required_error: 'state is required',
-})
+}).optional()
 
 
 
@@ -134,9 +134,7 @@ export const createTaskSchema = z.object({
         vehReg,
         note,
         images,
-        state,
         assigned,
-        assignee
     }),
 })
 
@@ -144,8 +142,8 @@ export const updateTaskSchema = z.object({
     body: z.object({
         vehReg: vehReg.optional(),
         note: note.optional(),
-        images: images.optional(),
-        state: state.optional(),
+        images,
+        state,
         assigned: assigned.optional(),
         assignee: assigned.optional(),
     }),

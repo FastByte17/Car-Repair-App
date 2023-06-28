@@ -39,6 +39,15 @@ export type Task = {
     assigneeId: string
 }
 
+export type TaskForm = {
+    vehReg: string,
+    note: string,
+    images: [] | FileList,
+    assigned: string,
+}
+
+export type Worker = Pick<User, "id" | "firstName" | "lastName">;
+
 export type Tasks = Task[]
 
 export type Users = User[]
