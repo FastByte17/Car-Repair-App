@@ -1,4 +1,4 @@
-import prisma from '../prisma/client.js';
+import prisma from "../prisma/client.js";
 
 export const findAll = async (_req, res) => {
     try {
@@ -10,52 +10,66 @@ export const findAll = async (_req, res) => {
                         firstName: true,
                         lastName: true,
                         password: false,
-                    }
-                }, assignee: {
+                    },
+                },
+                assignee: {
                     select: {
                         id: true,
                         firstName: true,
                         lastName: true,
-                        password: false
-                    }
-                }
-            }
-        })
+                        password: false,
+                    },
+                },
+                column: {
+                    select: {
+                        id: true,
+                        title: true,
+                        Task: false,
+                        position: true,
+                    },
+                },
+            },
+        });
         res.status(201).json({ data: tasks });
     } catch (error) {
-        res.status(401).json({ message: error.message })
+        res.status(401).json({ message: error.message });
     }
-}
+};
 
 export const update = async (req, res) => {
     try {
-        const taskId = req.params.taskId
+        const taskId = req.params.taskId;
         const updatedTask = await prisma.task.update({
             where: {
-                id: taskId
+                id: taskId,
             },
             data: {
-                ...req.body
-            }
-        })
+                ...req.body,
+            },
+        });
         res.status(201).json({ data: updatedTask });
     } catch (error) {
-        res.status(401).json({ message: error.message })
+        res.status(401).json({ message: error.message });
     }
-}
+};
 
 export const create = async (req, res) => {
     try {
-        console.log(req.body);
-        const { assigned } = req.body
-        const baseUrl = process.env.BASE_URL
+        const { assigned, column } = req.body;
+        const baseUrl = process.env.BASE_URL;
 
-        const images = req.files.map(file => baseUrl + file.destination.replace('./uploads', '') + file.filename)
+        const images = req.files.map(
+            (file) =>
+                baseUrl +
+                file.destination.replace("./uploads", "") +
+                file.filename
+        );
         const newTask = await prisma.task.create({
             data: {
                 ...req.body,
                 assignee: { connect: { id: req.user.id } },
                 assigned: { connect: { id: assigned } },
+                column: { connect: { id: column } },
                 images,
             },
             include: {
@@ -65,21 +79,21 @@ export const create = async (req, res) => {
                         firstName: true,
                         lastName: true,
                         password: false,
-                    }
-                }, assignee: {
+                    },
+                },
+                assignee: {
                     select: {
                         id: true,
                         firstName: true,
                         lastName: true,
-                        password: false
-                    }
-                }
-            }
-        })
+                        password: false,
+                    },
+                },
+            },
+        });
 
         res.status(201).json({ data: newTask });
     } catch (error) {
-        res.status(401).json({ message: error.message })
-
+        res.status(401).json({ message: error.message });
     }
-}
+};

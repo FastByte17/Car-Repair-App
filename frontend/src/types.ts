@@ -4,12 +4,6 @@ export enum Role {
     ADMIN = "ADMIN",
 }
 
-export enum State {
-    IN_PROGRESS = "IN_PROGRESS",
-    ON_HOLD = "ON_HOLD",
-    CAR_WASH = "CAR_WASH",
-    DONE = "DONE",
-}
 
 export type User = {
     id: string
@@ -30,13 +24,21 @@ export type Task = {
     vehReg: string
     note: string
     images: string
-    state: State
+    position: number
+    column?: Column
     assigned: User
     assignee: User
     createdAt: Date
     updatedAt: Date
-    assignedId: string
-    assigneeId: string
+}
+
+export type Column = {
+    id: string
+    title: string
+    tasks: Task[]
+    position: number
+    createdAt: Date
+    updatedAt: Date
 }
 
 export type TaskForm = {
@@ -49,5 +51,5 @@ export type TaskForm = {
 export type Worker = Pick<User, "id" | "firstName" | "lastName">;
 
 export type Tasks = Task[]
-
 export type Users = User[]
+export type Columns = Column[]

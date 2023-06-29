@@ -1,16 +1,30 @@
-.card-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+.column-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5em;
+    min-width: 100vw;
+    padding: 1em 0;
+    
 }
+
 
 .card-container {
     text-align: center;
     padding: 1em;
+    background: #F5F5F5; 
+    border-radius: .5em;
+    border: 1px solid black;
+    height: fit-content;
+}
+.add-column {
+    border: none;
+    background: none;
 }
 
 .cardTitle,
 p {
-    font-size: clamp(1.2rem, 2.5vw, 2rem);
+    font-size: clamp(1rem, 2.2vw, 1.8rem);
+    color: black;
 }
 
 @media only screen and (max-width: 780px) {
@@ -18,7 +32,7 @@ p {
         padding: .1em;
     }
 
-    .card-row {
+    .column-container {
         overflow-x: scroll;
     }
 }

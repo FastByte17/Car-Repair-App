@@ -1,10 +1,9 @@
 import {
   IonActionSheet,
-  IonCard, IonCardContent, IonCardHeader, IonCardSubtitle,
-  IonCardTitle, IonCol, IonContent, IonFab, IonFabButton,
+  IonContent, IonFab, IonFabButton,
   IonGrid,
   IonHeader, IonIcon,
-  IonPage, IonPopover, IonRow, IonTitle, IonToolbar
+  IonPage, IonPopover, IonTitle, IonToolbar
 } from '@ionic/react';
 import {
   FormLabel,
@@ -15,6 +14,9 @@ import {
   Button,
   Box,
   Flex,
+  useToast,
+  Container
+
 } from '@chakra-ui/react'
 import '../Tab2.css';
 import { useState, FormEvent } from 'react';
@@ -25,16 +27,19 @@ import {
   playForwardOutline, receiptOutline, waterOutline
 } from 'ionicons/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchTasks, fetchWorkers, fetchCurrentUser, addTask } from '../../api'
-import { State, Tasks, TaskForm, Worker, User, Role, Task } from '../../types'
+import { fetchColumns, fetchWorkers, fetchCurrentUser, addTask } from '../../api'
+import { Columns, TaskForm, Worker, User, Role, Task, Column } from '../../types'
+import Card from './Card'
 
 
 const Inspection: React.FC = () => {
   const queryClient = useQueryClient();
-  const { data, status, error } = useQuery<Tasks, Error>({ queryKey: ['items'], queryFn: fetchTasks });
+  const toast = useToast()
+  const { data: columns, status, error } = useQuery<Columns, Error>({ queryKey: ['columns'], queryFn: fetchColumns });
   const { data: user, status: userStatus, error: userError } = useQuery<User, Error>({ queryKey: ['user'], queryFn: fetchCurrentUser });
   const { data: workers, status: workersStatus, error: workersError } = useQuery<Worker[], Error>({ queryKey: ['workers'], queryFn: fetchWorkers });
   const { mutate, isError, error: addTaskError } = useMutation<Task, Error, FormData, unknown>({ mutationKey: ['addTask'], mutationFn: addTask });
+  //const { mutate: addColumn, error: addColumnError } = useMutation({ mutationKey: ['addColumn'], mutationFn: addTask });
   const [selectListVisible, setSelectListVisible] = useState(false);
   const [showPopover, setShowPopover] = useState(false);
   const [values, setValues] = useState<TaskForm>({
@@ -46,20 +51,29 @@ const Inspection: React.FC = () => {
 
   const handleSave = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Close the alert
-    const task = new FormData()
-    const assigned = (user && user.role === Role.EMPLOYEE) ? user.id : values.assigned
-    task.append('vehReg', values.vehReg)
-    task.append('note', values.note)
-    values.images.length > 0 && Array.from(values.images).forEach((file, i) => {
-      task.append('images', file, file.name)
-    })
-    task.append('assigned', assigned)
-    mutate(task, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['items'] })
-      }
-    })
+    if (!columns || columns.length < 0) {
+      toast({
+        title: 'Create a column before creating a task',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+    } else {
+      const task = new FormData()
+      const assigned = (user && user.role === Role.EMPLOYEE) ? user.id : values.assigned
+      task.append('vehReg', values.vehReg)
+      task.append('note', values.note)
+      values.images.length > 0 && Array.from(values.images).forEach((file) => {
+        task.append('images', file, file.name)
+      })
+      task.append('assigned', assigned)
+      task.append('column', columns[0].id.toString())
+      mutate(task, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['columns'] })
+        }
+      })
+    }
     setShowPopover(false);
   };
 
@@ -96,69 +110,18 @@ const Inspection: React.FC = () => {
         {status === 'error' && <p>Error fetching data: {error?.message}</p>}
         {status === 'loading' && <p>Loading...</p>}
         {status === 'success' &&
-          <>
-            <IonGrid fixed={true} className='grid'>
-              <IonRow className="card-row" >
-
-                <IonCol>
-                  <div className='card-container'>
-                    <p>In Progress</p>
-                    {data.filter(task => task.state === State.IN_PROGRESS).map((item) =>
-                      < IonCard color="warning" button={true} onClick={inspectionMenu} key={item.id}>
-                        <IonCardHeader>
-                          <IonCardTitle className='cardTitle'>{item.vehReg}</IonCardTitle>
-                          <IonCardSubtitle>Assigned to: {item.assigned.lastName}</IonCardSubtitle>
-                        </IonCardHeader>
-                        <IonCardContent>{item.note}</IonCardContent>
-                      </IonCard>)}
-                  </div>
-                </IonCol>
-
-                <IonCol>
-                  <div className='card-container'>
-                    <p>On Hold</p>
-                    {data.filter(task => task.state === State.ON_HOLD).map((item) =>
-                      < IonCard color="danger" button={true} onClick={inspectionMenu} key={item.id}>
-                        <IonCardHeader>
-                          <IonCardTitle className='cardTitle'>{item.vehReg}</IonCardTitle>
-                          <IonCardSubtitle>Assigned to: {item.assigned.lastName}</IonCardSubtitle>
-                        </IonCardHeader>
-                        <IonCardContent>{item.note}</IonCardContent>
-                      </IonCard>)}
-                  </div>
-                </IonCol>
-
-                <IonCol>
-                  <div className='card-container'>
-                    <p>Car Wash</p>
-                    {data.filter(task => task.state === State.CAR_WASH).map((item) =>
-                      < IonCard color="secondary" button={true} onClick={inspectionMenu} key={item.id}>
-                        <IonCardHeader>
-                          <IonCardTitle className='cardTitle'>{item.vehReg}</IonCardTitle>
-                          <IonCardSubtitle>Assigned to: {item.assigned.lastName}</IonCardSubtitle>
-                        </IonCardHeader>
-                        <IonCardContent>{item.note}</IonCardContent>
-                      </IonCard>)}
-                  </div>
-                </IonCol>
-
-                <IonCol>
-                  <div className='card-container'>
-                    <p>Done</p>
-                    {data.filter(task => task.state === State.DONE).map((item) =>
-                      < IonCard color="success" button={true} onClick={inspectionMenu} key={item.id}>
-                        <IonCardHeader>
-                          <IonCardTitle className='cardTitle'>{item.vehReg}</IonCardTitle>
-                          <IonCardSubtitle>Assigned to: {item.assigned.lastName}</IonCardSubtitle>
-                        </IonCardHeader>
-                        <IonCardContent>{item.note}</IonCardContent>
-                      </IonCard>)}
-                  </div>
-                </IonCol>
-
-              </IonRow>
-            </IonGrid>
-          </>}
+          <Container className="column-container" >
+            {columns.map(item => (
+              <Container key={item.id} className='card-container'>
+                <p>{item.title}</p>
+                <Card tasks={item.tasks} inspectionMenu={inspectionMenu} />
+              </Container>
+            ))}
+            <Container className='card-container add-column'>
+              <Button colorScheme='blue'>Add column</Button>
+            </Container>
+          </Container>
+        }
 
         <>
           <IonActionSheet
@@ -250,6 +213,8 @@ const Inspection: React.FC = () => {
 
         <IonPopover
           isOpen={showPopover}
+          side='top'
+          alignment='center'
           onDidDismiss={() => setShowPopover(false)}>
           <IonContent>
             <form onSubmit={handleSave}>
