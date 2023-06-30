@@ -27,8 +27,9 @@ import {
   playForwardOutline, receiptOutline, waterOutline
 } from 'ionicons/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchColumns, fetchWorkers, fetchCurrentUser, addTask } from '../../api'
-import { Columns, TaskForm, Worker, User, Role, Task, Column } from '../../types'
+import { fetchColumns, fetchWorkers, fetchCurrentUser, addTask, addColumn } from '../../api'
+import { Columns, TaskForm, Worker, User, Role, Task, Column, ColumnFormInput } from '../../types'
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import Card from './Card'
 
 
@@ -39,9 +40,10 @@ const Inspection: React.FC = () => {
   const { data: user, status: userStatus, error: userError } = useQuery<User, Error>({ queryKey: ['user'], queryFn: fetchCurrentUser });
   const { data: workers, status: workersStatus, error: workersError } = useQuery<Worker[], Error>({ queryKey: ['workers'], queryFn: fetchWorkers });
   const { mutate, isError, error: addTaskError } = useMutation<Task, Error, FormData, unknown>({ mutationKey: ['addTask'], mutationFn: addTask });
-  //const { mutate: addColumn, error: addColumnError } = useMutation({ mutationKey: ['addColumn'], mutationFn: addTask });
+  const { mutate: createColumn } = useMutation<Column, Error, ColumnFormInput, unknown>({ mutationKey: ['addColumn'], mutationFn: addColumn });
   const [selectListVisible, setSelectListVisible] = useState(false);
   const [showPopover, setShowPopover] = useState(false);
+  const [columnTitle, setColumnTitle] = useState('');
   const [values, setValues] = useState<TaskForm>({
     vehReg: '',
     note: '',
@@ -49,7 +51,7 @@ const Inspection: React.FC = () => {
     assigned: '',
   });
 
-  const handleSave = (e: FormEvent<HTMLFormElement>) => {
+  const addTaskToDb = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!columns || columns.length < 0) {
       toast({
@@ -77,6 +79,24 @@ const Inspection: React.FC = () => {
     setShowPopover(false);
   };
 
+  const addColumnToDb = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!columnTitle) {
+      return toast({
+        title: 'Column must have a title',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
+    }
+
+    createColumn({ title: columnTitle }, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['columns'] })
+      }
+    })
+  }
+
   const handleCancel = () => {
     // Close the popover without saving
     setShowPopover(false);
@@ -90,11 +110,28 @@ const Inspection: React.FC = () => {
     setSelectListVisible(false);
   };
 
+  const onDragEnd = (result: DropResult) => {
+
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+    // dropped in the same place
+    if (result.source.droppableId === result.destination.droppableId && result.source.index === result.destination.index) {
+      return;
+    }
+  }
+
+  const getListStyle = (isDraggingOver: boolean) => ({
+    background: isDraggingOver ? "lightblue" : "lightgrey",
+    opacity: isDraggingOver ? 0.8 : 1,
+  });
+
 
 
 
   return (
-    <IonPage>
+    <IonPage >
       <IonHeader>
         <IonToolbar>
           <IonTitle>Inspection</IonTitle>
@@ -111,15 +148,38 @@ const Inspection: React.FC = () => {
         {status === 'loading' && <p>Loading...</p>}
         {status === 'success' &&
           <Container className="column-container" >
-            {columns.map(item => (
-              <Container key={item.id} className='card-container'>
-                <p>{item.title}</p>
-                <Card tasks={item.tasks} inspectionMenu={inspectionMenu} />
+            <DragDropContext onDragEnd={onDragEnd}>
+              {columns.map((item, index) => (
+                <Droppable droppableId={item.id} key={item.id}>
+                  {(provided, snapshot) => (
+                    <Container
+                      className='column-item'
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      style={getListStyle(snapshot.isDraggingOver)}
+                    >
+                      <p>{item.title}</p>
+                      <Card tasks={item.tasks} inspectionMenu={inspectionMenu} />
+                      {snapshot.isUsingPlaceholder && <div
+                        style={{
+                          opacity: 0, // Adjust the opacity of the placeholder
+                          background: 'transparent', // Set the background color of the placeholder to transparent
+                        }}
+                      >
+                        {provided.placeholder}
+                      </div>}
+                    </Container>
+                  )}
+                </Droppable>
+
+              ))}
+              <Container className='column-item'>
+                <form onSubmit={addColumnToDb} className='column-input'>
+                  <Input placeholder='add column' value={columnTitle} onChange={({ target }) => setColumnTitle(target.value)} />
+                  <Button type='submit'>Add column</Button>
+                </form>
               </Container>
-            ))}
-            <Container className='card-container add-column'>
-              <Button colorScheme='blue'>Add column</Button>
-            </Container>
+            </DragDropContext>
           </Container>
         }
 
@@ -217,7 +277,7 @@ const Inspection: React.FC = () => {
           alignment='center'
           onDidDismiss={() => setShowPopover(false)}>
           <IonContent>
-            <form onSubmit={handleSave}>
+            <form onSubmit={addTaskToDb}>
               <Box margin={2}>
                 <FormLabel>Vehicle Reg Number</FormLabel>
                 <Input type='text' placeholder='ABC-123' isRequired={true} value={values.vehReg} onChange={(e) => setValues({ ...values, vehReg: e.target.value })} />

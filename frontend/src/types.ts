@@ -1,3 +1,6 @@
+import { DraggingStyle, NotDraggingStyle } from "react-beautiful-dnd";
+
+
 export enum Role {
     EMPLOYEE = "EMPLOYEE",
     MANAGER = "MANAGER",
@@ -49,7 +52,9 @@ export type TaskForm = {
 }
 
 export type Worker = Pick<User, "id" | "firstName" | "lastName">;
+export type ColumnFormInput = Pick<Column, "title">;
 
 export type Tasks = Task[]
 export type Users = User[]
 export type Columns = Column[]
+export type DraggableStyleType = DraggingStyle | NotDraggingStyle | undefined

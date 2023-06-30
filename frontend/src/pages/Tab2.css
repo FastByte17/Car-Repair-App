@@ -2,23 +2,39 @@
     display: flex;
     justify-content: space-between;
     gap: 0.5em;
-    min-width: 100vw;
+    height: 100%;
+    min-width: 100%;
+    max-width: 1400px !important;
     padding: 1em 0;
+    overflow-x: auto;
     
 }
 
-
-.card-container {
+.column-item {
+    flex: 1 0 300px;
     text-align: center;
-    padding: 1em;
-    background: #F5F5F5; 
+    padding: .5em;
+    background: lightgrey; 
     border-radius: .5em;
     border: 1px solid black;
     height: fit-content;
 }
-.add-column {
-    border: none;
-    background: none;
+
+
+.column-input {
+    display: flex;
+    flex-direction: column;
+    gap: .5em 0;
+    margin: 0;
+}
+
+.column-input > button {
+    background: black;
+    color: white;
+}
+
+.column-input > button:hover {
+    background: rgb(56, 55, 55);
 }
 
 .cardTitle,
@@ -28,7 +44,7 @@ p {
 }
 
 @media only screen and (max-width: 780px) {
-    .card-container {
+    .column-item {
         padding: .1em;
     }
 
@@ -36,3 +52,32 @@ p {
         overflow-x: scroll;
     }
 }
+
+
+
+/* Track */
+::-webkit-scrollbar {
+    height: 10px; /* Set the height of the scrollbar */
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(68, 87, 148); /* Set the color of the scrollbar handle */
+    border-radius: 4px; /* Round the corners of the handle */
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color:  rgba(68, 87, 148, 0.725); /* Set the color of the scrollbar handle on hover */
+  }
+  
+  /* Track on hover */
+  ::-webkit-scrollbar-track:hover {
+    background-color: transparent; /* Set the color of the scrollbar track on hover */
+  }
+  
+  /* Corner */
+  ::-webkit-scrollbar-corner {
+    background-color: #f1f1f1; /* Set the color of the scrollbar corner (where vertical and horizontal scrollbars meet) */
+  }
+  
