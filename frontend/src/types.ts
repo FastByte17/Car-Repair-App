@@ -51,6 +51,12 @@ export type TaskForm = {
     assigned: string,
 }
 
+export type reOrderInput = {
+    columnId: string,
+    taskId: string,
+    newPosition: number,
+}
+
 export type Worker = Pick<User, "id" | "firstName" | "lastName">;
 export type ColumnFormInput = Pick<Column, "title">;
 

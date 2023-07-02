@@ -30,7 +30,7 @@ const Card = ({ tasks, inspectionMenu }: Props) => {
 
         <div>
             {tasks.map((task, index) => (
-                <Draggable key={task.id} draggableId={task.id} index={index}>
+                <Draggable key={task.id} draggableId={task.id} index={index + 1}>
                     {(provided, snapshot) => (
                         <IonCard
                             color="warning"

@@ -27,8 +27,8 @@ import {
   playForwardOutline, receiptOutline, waterOutline
 } from 'ionicons/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchColumns, fetchWorkers, fetchCurrentUser, addTask, addColumn } from '../../api'
-import { Columns, TaskForm, Worker, User, Role, Task, Column, ColumnFormInput } from '../../types'
+import { fetchColumns, fetchWorkers, fetchCurrentUser, addTask, addColumn, reOrder } from '../../api'
+import { Columns, TaskForm, Worker, User, Role, Task, Column, ColumnFormInput, reOrderInput } from '../../types'
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import Card from './Card'
 
@@ -41,6 +41,7 @@ const Inspection: React.FC = () => {
   const { data: workers, status: workersStatus, error: workersError } = useQuery<Worker[], Error>({ queryKey: ['workers'], queryFn: fetchWorkers });
   const { mutate, isError, error: addTaskError } = useMutation<Task, Error, FormData, unknown>({ mutationKey: ['addTask'], mutationFn: addTask });
   const { mutate: createColumn } = useMutation<Column, Error, ColumnFormInput, unknown>({ mutationKey: ['addColumn'], mutationFn: addColumn });
+  const { mutate: reorderTasks } = useMutation<Task[], Error, reOrderInput, unknown>({ mutationKey: ['reorderTasks'], mutationFn: reOrder });
   const [selectListVisible, setSelectListVisible] = useState(false);
   const [showPopover, setShowPopover] = useState(false);
   const [columnTitle, setColumnTitle] = useState('');
@@ -50,6 +51,7 @@ const Inspection: React.FC = () => {
     images: [],
     assigned: '',
   });
+
 
   const addTaskToDb = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -93,7 +95,7 @@ const Inspection: React.FC = () => {
     createColumn({ title: columnTitle }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['columns'] })
-      }
+      },
     })
   }
 
@@ -120,6 +122,14 @@ const Inspection: React.FC = () => {
     if (result.source.droppableId === result.destination.droppableId && result.source.index === result.destination.index) {
       return;
     }
+
+    reorderTasks({ columnId: result.source.droppableId, taskId: result.draggableId, newPosition: result.destination.index }, {
+      onSuccess: () => {
+        console.log('success', Date.now());
+        queryClient.invalidateQueries({ queryKey: ['columns'] })
+      }
+    })
+
   }
 
   const getListStyle = (isDraggingOver: boolean) => ({
@@ -128,7 +138,7 @@ const Inspection: React.FC = () => {
   });
 
 
-
+  console.log(columns && columns[0].tasks[0], Date.now());
 
   return (
     <IonPage >
@@ -149,7 +159,7 @@ const Inspection: React.FC = () => {
         {status === 'success' &&
           <Container className="column-container" >
             <DragDropContext onDragEnd={onDragEnd}>
-              {columns.map((item, index) => (
+              {columns.map((item, _index) => (
                 <Droppable droppableId={item.id} key={item.id}>
                   {(provided, snapshot) => (
                     <Container

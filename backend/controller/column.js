@@ -32,6 +32,9 @@ export const findAll = async (_req, res) => {
                             },
                         },
                     },
+                    orderBy: {
+                        position: 'asc',
+                    }
                 },
             },
         });

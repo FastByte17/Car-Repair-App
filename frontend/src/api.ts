@@ -1,7 +1,7 @@
-import { Columns, Task, Worker, User, Column, ColumnFormInput } from "./types";
+import { Columns, Task, Worker, User, Column, ColumnFormInput, reOrderInput } from "./types";
 
 const BASE_URL = "http://localhost:3000/api/v1/";
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4ODE0NzQ3NywiZXhwIjoxNjg4MTUxMDc3fQ.S2U7QMud5Ecucjm7E6cPTtGrVCHkpSud2G6kGLpBf8M";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4ODMxMzgxMSwiZXhwIjoxNjg4MzE3NDExfQ.12V-XLufCVZ--PvFt0Gl-gMgGHjaTD-rTBxALwbEsj4";
 const headers = {
   Authorization: "Bearer " + token,
   "Content-Type": "application/json",
@@ -34,6 +34,18 @@ export const addTask = async (data: FormData): Promise<Task> => {
     method: "POST",
     headers: myHeader,
     body: data,
+  });
+  if (!response.ok) throw new Error(response.statusText);
+  const tasks = await response.json();
+  return tasks?.data;
+};
+
+
+export const reOrder = async (data: reOrderInput): Promise<Task[]> => {
+  const response = await fetch(BASE_URL + "task", {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify(data),
   });
   if (!response.ok) throw new Error(response.statusText);
   const tasks = await response.json();
