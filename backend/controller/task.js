@@ -61,7 +61,7 @@ export const reOrder = async (req, res) => {
         });
         const oldPosition = task.position
         const oldColumnId = task.columnId
-        if (oldColumnId != newColumnId) {
+        if (oldColumnId !== newColumnId) {
             await prisma.task.updateMany({
                 data: { position: { decrement: 1 } },
                 where: {
@@ -84,7 +84,7 @@ export const reOrder = async (req, res) => {
                     }
                 },
             });
-        } else if (newPosition != null && oldPosition != null) {
+        } else if (newPosition !== null && oldPosition !== null) {
             if (oldPosition < newPosition) {
                 await prisma.task.updateMany({
                     data: { position: { decrement: 1 } },

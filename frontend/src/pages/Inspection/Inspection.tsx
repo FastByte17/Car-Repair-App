@@ -92,6 +92,7 @@ const Inspection: React.FC = () => {
       })
     }
 
+
     createColumn({ title: columnTitle }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['columns'] })
@@ -123,12 +124,28 @@ const Inspection: React.FC = () => {
       return;
     }
 
-    reorderTasks({ columnId: result.source.droppableId, taskId: result.draggableId, newPosition: result.destination.index }, {
-      onSuccess: () => {
-        console.log('success', Date.now());
-        queryClient.invalidateQueries({ queryKey: ['columns'] })
+    if (columns) {
+      const newColumns = Array.from(columns)
+      const sourceColumn = newColumns.find(column => column.id === result.source.droppableId)
+      const destinationColumn = newColumns.find(column => column.id === result.destination?.droppableId)
+      if (sourceColumn && destinationColumn) {
+        const newTask = sourceColumn.tasks.find(task => task.id === result.draggableId)
+        if (sourceColumn === destinationColumn && newTask) {
+          newColumns[newColumns.indexOf(sourceColumn)].tasks.splice(result.source.index, 1)
+          newColumns[newColumns.indexOf(sourceColumn)].tasks.splice(result.destination.index, 0, newTask)
+        } else {
+          if (newTask) {
+            newColumns[newColumns.indexOf(sourceColumn)].tasks.splice(result.source.index, 1)
+            newColumns[newColumns.indexOf(destinationColumn)].tasks.splice(result.destination.index, 0, newTask)
+          }
+        }
       }
-    })
+      reorderTasks({ columnId: result.destination.droppableId, taskId: result.draggableId, newPosition: (result.destination.index + 1) }, {
+        onSuccess: () => {
+          queryClient.setQueryData(['columns'], newColumns)
+        }
+      })
+    }
 
   }
 
@@ -137,8 +154,6 @@ const Inspection: React.FC = () => {
     opacity: isDraggingOver ? 0.8 : 1,
   });
 
-
-  console.log(columns && columns[0].tasks[0], Date.now());
 
   return (
     <IonPage >
@@ -169,7 +184,7 @@ const Inspection: React.FC = () => {
                       style={getListStyle(snapshot.isDraggingOver)}
                     >
                       <p>{item.title}</p>
-                      <Card tasks={item.tasks} inspectionMenu={inspectionMenu} />
+                      <Card tasks={item.tasks} inspectionMenu={inspectionMenu} columnTitle={item.title} />
                       {snapshot.isUsingPlaceholder && <div
                         style={{
                           opacity: 0, // Adjust the opacity of the placeholder

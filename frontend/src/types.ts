@@ -28,7 +28,7 @@ export type Task = {
     note: string
     images: string
     position: number
-    column?: Column
+    columnId: string
     assigned: User
     assignee: User
     createdAt: Date

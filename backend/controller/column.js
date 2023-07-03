@@ -13,7 +13,7 @@ export const findAll = async (_req, res) => {
                         position: true,
                         createdAt: true,
                         updatedAt: true,
-                        columnId: false,
+                        columnId: true,
                         column: false,
                         assigned: {
                             select: {

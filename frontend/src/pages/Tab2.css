@@ -6,7 +6,9 @@
     min-width: 100%;
     max-width: 1400px !important;
     padding: 1em 0;
-    overflow-x: auto;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    
     
 }
 
@@ -18,6 +20,8 @@
     border-radius: .5em;
     border: 1px solid black;
     height: fit-content;
+    max-height: 560px;
+    overflow-y: scroll;
 }
 
 
@@ -58,22 +62,30 @@ p {
 /* Track */
 ::-webkit-scrollbar {
     height: 10px; /* Set the height of the scrollbar */
+    width: .6em;;
+    cursor: pointer !important;
   }
   
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background-color: rgb(68, 87, 148); /* Set the color of the scrollbar handle */
+    background-color: rgb(13, 13, 13); /* Set the color of the scrollbar handle */
     border-radius: 4px; /* Round the corners of the handle */
+    cursor: pointer !important;
+
   }
   
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background-color:  rgba(68, 87, 148, 0.725); /* Set the color of the scrollbar handle on hover */
+    background-color:  rgb(13, 13, 13); /* Set the color of the scrollbar handle on hover */
+    cursor: pointer !important;
+
   }
   
   /* Track on hover */
   ::-webkit-scrollbar-track:hover {
-    background-color: transparent; /* Set the color of the scrollbar track on hover */
+    cursor: pointer;
+    cursor: pointer !important;
+
   }
   
   /* Corner */

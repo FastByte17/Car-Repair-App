@@ -11,6 +11,7 @@ import { Draggable } from "react-beautiful-dnd";
 type Props = {
     tasks: Tasks,
     inspectionMenu: () => void,
+    columnTitle: string
 }
 
 
@@ -19,21 +20,19 @@ const getItemStyle = (isDragging: boolean, draggableStyle: DraggableStyleType) =
     userSelect: "none",
     padding: 8 * 2,
     margin: `0 0 ${8}px 0`,
-    // change background colour if dragging
-    //background: isDragging ? "lightgreen" : "lightgrey",
-    // styles we need to apply on draggables
     ...draggableStyle
 });
 
-const Card = ({ tasks, inspectionMenu }: Props) => {
+const Card = ({ tasks, inspectionMenu, columnTitle }: Props) => {
+    const color = columnTitle === "In Progress" ? "warning" : (columnTitle === "On Hold" ? "danger" : (columnTitle === "Car Wash" ? "secondary" : "success"));
     return (
 
         <div>
             {tasks.map((task, index) => (
-                <Draggable key={task.id} draggableId={task.id} index={index + 1}>
+                <Draggable key={task.id} draggableId={task.id} index={index}>
                     {(provided, snapshot) => (
                         <IonCard
-                            color="warning"
+                            color={color}
                             button={true}
                             onClick={inspectionMenu}
                             key={task.id}
