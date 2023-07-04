@@ -10,7 +10,7 @@ import { Draggable } from "react-beautiful-dnd";
 
 type Props = {
     tasks: Tasks,
-    inspectionMenu: () => void,
+    inspectionMenu: (taskId: string, columnId: string) => void,
     columnTitle: string
 }
 
@@ -26,7 +26,6 @@ const getItemStyle = (isDragging: boolean, draggableStyle: DraggableStyleType) =
 const Card = ({ tasks, inspectionMenu, columnTitle }: Props) => {
     const color = columnTitle === "In Progress" ? "warning" : (columnTitle === "On Hold" ? "danger" : (columnTitle === "Car Wash" ? "secondary" : "success"));
     return (
-
         <div>
             {tasks.map((task, index) => (
                 <Draggable key={task.id} draggableId={task.id} index={index}>
@@ -34,7 +33,7 @@ const Card = ({ tasks, inspectionMenu, columnTitle }: Props) => {
                         <IonCard
                             color={color}
                             button={true}
-                            onClick={inspectionMenu}
+                            onClick={() => inspectionMenu(task.id, task.columnId)}
                             key={task.id}
                             ref={provided.innerRef}
                             {...provided.draggableProps}

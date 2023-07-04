@@ -8,6 +8,8 @@ ion-content {
     /* height: 100vh; */
 }
 
+
+
 @media (max-width: 767px) {
     ion-content {
         background-size: contain;

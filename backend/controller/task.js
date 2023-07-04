@@ -38,16 +38,49 @@ export const findAll = async (_req, res) => {
 
 export const update = async (req, res) => {
     try {
+        const { assigned } = req.body;
         const taskId = req.params.taskId;
+        const baseUrl = process.env.BASE_URL;
+        const images = req.files.map(
+            (file) =>
+                baseUrl +
+                file.destination.replace("./uploads", "") +
+                file.filename
+        );
         const updatedTask = await prisma.task.update({
             where: {
                 id: taskId,
             },
             data: {
                 ...req.body,
+                assigned: { connect: { id: assigned } },
+                images,
             },
         });
         res.status(201).json({ data: updatedTask });
+    } catch (error) {
+        res.status(401).json({ message: error.message });
+    }
+};
+
+export const deleteTask = async (req, res) => {
+    try {
+        const taskId = req.params.taskId;
+        const task = await prisma.task.delete({
+            where: { id: taskId },
+        });
+        await prisma.task.updateMany({
+            data: { position: { decrement: 1 } },
+            where: {
+                columnId: {
+                    equals: task.columnId,
+                },
+                position: {
+                    gt: task.position,
+                }
+            },
+        });
+        res.status(201).json({ data: task });
     } catch (error) {
         res.status(401).json({ message: error.message });
     }

@@ -1,7 +1,7 @@
 import { Columns, Task, Worker, User, Column, ColumnFormInput, reOrderInput } from "./types";
 
 const BASE_URL = "http://localhost:3000/api/v1/";
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4ODQwMDk4NCwiZXhwIjoxNjg4NDA0NTg0fQ.JGg5X6m2q8PyW68dxJTMS3jIbmMTUF8a7Lt3tZbirP4";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4ODQ5MTQ4MiwiZXhwIjoxNjg4NDk1MDgyfQ.lMZOm809pWbZqoD0h7-7vSikEng91oHaRhMxDXfuLo8";
 const headers = {
   Authorization: "Bearer " + token,
   "Content-Type": "application/json",
@@ -15,8 +15,8 @@ export const fetchCurrentUser = async (): Promise<User> => {
     method: "GET",
   });
   if (!response.ok) throw new Error(response.statusText);
-  const tasks = await response.json();
-  return tasks?.data;
+  const user = await response.json();
+  return user?.data;
 };
 
 export const fetchColumns = async (): Promise<Columns> => {
@@ -25,8 +25,8 @@ export const fetchColumns = async (): Promise<Columns> => {
     method: "GET",
   });
   if (!response.ok) throw new Error(response.statusText);
-  const tasks = await response.json();
-  return tasks?.data;
+  const columns = await response.json();
+  return columns?.data;
 };
 
 export const addTask = async (data: FormData): Promise<Task> => {
@@ -36,8 +36,29 @@ export const addTask = async (data: FormData): Promise<Task> => {
     body: data,
   });
   if (!response.ok) throw new Error(response.statusText);
-  const tasks = await response.json();
-  return tasks?.data;
+  const task = await response.json();
+  return task?.data;
+};
+
+export const editTask = async (data: { body: FormData, id: string }): Promise<Task> => {
+  const response = await fetch(BASE_URL + `task/${data.id}`, {
+    method: "PATCH",
+    headers: myHeader,
+    body: data.body,
+  });
+  if (!response.ok) throw new Error(response.statusText);
+  const task = await response.json();
+  return task?.data;
+};
+
+export const deleteTask = async (id: string): Promise<Task> => {
+  const response = await fetch(BASE_URL + `task/${id}`, {
+    method: "DELETE",
+    headers,
+  });
+  if (!response.ok) throw new Error(response.statusText);
+  const task = await response.json();
+  return task?.data;
 };
 
 
@@ -48,8 +69,8 @@ export const reOrder = async (data: reOrderInput): Promise<Task[]> => {
     body: JSON.stringify(data),
   });
   if (!response.ok) throw new Error(response.statusText);
-  const tasks = await response.json();
-  return tasks?.data;
+  const task = await response.json();
+  return task?.data;
 };
 
 export const addColumn = async (data: ColumnFormInput): Promise<Column> => {
@@ -59,8 +80,8 @@ export const addColumn = async (data: ColumnFormInput): Promise<Column> => {
     body: JSON.stringify(data),
   });
   if (!response.ok) throw new Error(response.statusText);
-  const tasks = await response.json();
-  return tasks?.data;
+  const column = await response.json();
+  return column?.data;
 };
 
 export const fetchWorkers = async (): Promise<Worker[]> => {
@@ -69,6 +90,6 @@ export const fetchWorkers = async (): Promise<Worker[]> => {
     method: "GET",
   });
   if (!response.ok) throw new Error(response.statusText);
-  const tasks = await response.json();
-  return tasks?.data;
+  const workers = await response.json();
+  return workers?.data;
 };
