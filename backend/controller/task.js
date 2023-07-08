@@ -36,6 +36,41 @@ export const findAll = async (_req, res) => {
     }
 };
 
+
+
+export const getTask = async (req, res) => {
+    try {
+        const taskId = req.params.taskId;
+        const task = await prisma.task.findUnique({
+            where: {
+                id: taskId,
+            },
+            include: {
+                column: {
+                    select: {
+                        id: true,
+                        title: true,
+                        position: false,
+                        createdAt: false,
+                        updatedAt: false,
+                    },
+                },
+                assigned: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        password: false,
+                    },
+                },
+            }
+        });
+        res.status(201).json({ data: task });
+    } catch (error) {
+        res.status(401).json({ message: error.message });
+    }
+};
+
 export const update = async (req, res) => {
     try {
         const { assigned } = req.body;
@@ -91,6 +126,24 @@ export const reOrder = async (req, res) => {
         const { columnId: newColumnId, taskId, newPosition } = req.body;
         const task = await prisma.task.findFirst({
             where: { id: taskId },
+            include: {
+                history: true,
+            }
+        });
+        const column = await prisma.column.findFirst({ where: { id: newColumnId } })
+        let updatedHistory = task.history
+        if (task.history[task.history.length - 1].status !== column.title) {
+            updatedHistory = [...task.history.map(h => { h.status, h.changedAt }), {
+                status: column.title,
+                changedAt: Date.now()
+            }];
+        }
+        const newTask = await prisma.task.update({
+            data: {
+                position: newPosition,
+                column: { connect: { id: newColumnId } },
+            },
+            where: { id: taskId }
         });
         const oldPosition = task.position
         const oldColumnId = task.columnId
@@ -146,16 +199,10 @@ export const reOrder = async (req, res) => {
                 });
             }
         }
-        const newTask = await prisma.task.update({
-            data: {
-                position: newPosition,
-                column: { connect: { id: newColumnId } },
-            },
-            where: { id: taskId },
-        });
 
         res.status(201).json({ data: newTask });
     } catch (error) {
+        console.log(error);
         res.status(401).json({ message: error.message });
     }
 };
@@ -171,12 +218,14 @@ export const create = async (req, res) => {
                 file.destination.replace("./uploads", "") +
                 file.filename
         );
+
         const newTask = await prisma.task.create({
             data: {
                 ...req.body,
                 assignee: { connect: { id: req.user.id } },
                 assigned: { connect: { id: assigned } },
                 column: { connect: { id: column } },
+                history: { create: [{ status: "In Progress" }] },
                 images,
             },
             include: {
@@ -199,8 +248,10 @@ export const create = async (req, res) => {
             },
         });
 
+
         res.status(201).json({ data: newTask });
     } catch (error) {
+        console.log(error);
         res.status(401).json({ message: error.message });
     }
 };

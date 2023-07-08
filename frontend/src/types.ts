@@ -33,6 +33,7 @@ export type Task = {
     assignee: User
     createdAt: Date
     updatedAt: Date
+    column: Column
 }
 
 export type Column = {

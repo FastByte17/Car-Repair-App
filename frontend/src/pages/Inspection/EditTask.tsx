@@ -7,17 +7,14 @@ import {
     Button,
     Box,
     Flex,
-    useToast,
     Container,
-    useDisclosure,
     Modal,
     ModalOverlay,
     ModalContent,
     ModalHeader,
     ModalFooter,
 } from '@chakra-ui/react'
-import { IonPopover } from '@ionic/react';
-import React, { useState, FormEvent, useEffect } from 'react'
+import { useState, FormEvent, useEffect } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { editTask } from '../../api'
 import { TaskForm, Role, User, Worker, Task, Columns } from '../../types'
@@ -30,7 +27,6 @@ type Props = {
     user: User | undefined,
     workers: Worker[] | undefined,
     card: { taskId: string, columnId: string },
-    columns: Columns | undefined,
 }
 
 type Input = {
@@ -38,7 +34,7 @@ type Input = {
     id: string,
 }
 
-export default function EditTask({ showEditModal, onCloseEditModal, userStatus, workersStatus, user, workers, card, columns }: Props) {
+export default function EditTask({ showEditModal, onCloseEditModal, userStatus, workersStatus, user, workers, card }: Props) {
     const queryClient = useQueryClient();
     const { mutate, isError, error } = useMutation<Task, Error, Input, unknown>({ mutationKey: ['editTask'], mutationFn: editTask });
     const [values, setValues] = useState<TaskForm>({
@@ -49,6 +45,7 @@ export default function EditTask({ showEditModal, onCloseEditModal, userStatus, 
     })
 
     useEffect(() => {
+        const columns = queryClient.getQueryData<Columns>(['columns'])
         const currentCard = columns?.find(column => column.id === card.columnId)?.tasks.find(task => task.id === card.taskId);
         setValues({
             vehReg: currentCard?.vehReg || '',
@@ -83,6 +80,7 @@ export default function EditTask({ showEditModal, onCloseEditModal, userStatus, 
         <Modal
             isOpen={showEditModal}
             onClose={onCloseEditModal}>
+            {/* onTransfer={changeColumnName} */}
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader>Edit Task</ModalHeader>

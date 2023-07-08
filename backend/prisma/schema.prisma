@@ -30,6 +30,14 @@ model User {
   AssignedTasks Task[]   @relation("assignee")
 }
 
+model History {
+  id        Int   @id @default(autoincrement())
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id])
+  status    String
+  changedAt DateTime @default(now())
+}
+
 model Task {
   id         String   @id @default(uuid())
   vehReg     String   @db.VarChar(50)
@@ -44,6 +52,7 @@ model Task {
   assigneeId String
   columnId   String
   position   Int      @default(autoincrement())
+  history    History[]
 }
 
 model Column {

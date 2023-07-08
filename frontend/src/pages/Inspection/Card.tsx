@@ -1,8 +1,11 @@
 import React from 'react'
 import {
-    IonCard, IonCardContent, IonCardHeader, IonCardSubtitle,
+    IonCard, IonCardHeader, IonCardSubtitle,
     IonCardTitle,
 } from '@ionic/react';
+import {
+    Text
+} from '@chakra-ui/react'
 import { Tasks, DraggableStyleType } from '../../types'
 import { Draggable } from "react-beautiful-dnd";
 
@@ -47,7 +50,7 @@ const Card = ({ tasks, inspectionMenu, columnTitle }: Props) => {
                                 <IonCardTitle className='cardTitle'>{task.vehReg}</IonCardTitle>
                                 <IonCardSubtitle>Assigned to: {task.assigned.lastName}</IonCardSubtitle>
                             </IonCardHeader>
-                            <IonCardContent>{task.note}</IonCardContent>
+                            <Text fontSize={'sm'} noOfLines={2}>{task.note}</Text>
                         </IonCard>
                     )}
                 </Draggable >

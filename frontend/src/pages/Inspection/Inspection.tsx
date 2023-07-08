@@ -31,6 +31,7 @@ import { Columns, TaskForm, Worker, User, Role, Task, Column, ColumnFormInput, r
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import Card from './Card'
 import EditTask from './EditTask';
+import Detail from './Detail';
 
 
 const Inspection: React.FC = () => {
@@ -38,12 +39,13 @@ const Inspection: React.FC = () => {
   const toast = useToast()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure()
+  const { isOpen: isDetailOpen, onOpen: onDetailOpen, onClose: onDetailClose } = useDisclosure()
   const { data: columns, status, error } = useQuery<Columns, Error>({ queryKey: ['columns'], queryFn: fetchColumns });
   const { data: user, status: userStatus } = useQuery<User, Error>({ queryKey: ['user'], queryFn: fetchCurrentUser });
   const { data: workers, status: workersStatus } = useQuery<Worker[], Error>({ queryKey: ['workers'], queryFn: fetchWorkers });
   const { mutate, isError, error: addTaskError } = useMutation<Task, Error, FormData, unknown>({ mutationKey: ['addTask'], mutationFn: addTask });
   const { mutate: createColumn } = useMutation<Column, Error, ColumnFormInput, unknown>({ mutationKey: ['addColumn'], mutationFn: addColumn });
-  const { mutate: reorderTasks } = useMutation<Task[], Error, reOrderInput, unknown>({ mutationKey: ['reorderTasks'], mutationFn: reOrder });
+  const { mutate: reorderTasks, data: reOrderData } = useMutation<Task[], Error, reOrderInput, unknown>({ mutationKey: ['reorderTasks'], mutationFn: reOrder });
   const { mutate: deleteATask } = useMutation<Task, Error, string, unknown>({ mutationKey: ['deleteTask'], mutationFn: deleteTask });
   const [selectListVisible, setSelectListVisible] = useState(false);
   const [columnTitle, setColumnTitle] = useState('');
@@ -57,6 +59,7 @@ const Inspection: React.FC = () => {
     images: [],
     assigned: '',
   });
+
 
 
   const addTaskToDb = (e: FormEvent<HTMLFormElement>) => {
@@ -122,6 +125,8 @@ const Inspection: React.FC = () => {
     if (!result.destination) {
       return;
     }
+
+
     // dropped in the same place
     if (result.source.droppableId === result.destination.droppableId && result.source.index === result.destination.index) {
       return;
@@ -143,9 +148,11 @@ const Inspection: React.FC = () => {
           }
         }
       }
+
       reorderTasks({ columnId: result.destination.droppableId, taskId: result.draggableId, newPosition: (result.destination.index + 1) }, {
         onSuccess: () => {
           queryClient.setQueryData(['columns'], newColumns)
+          queryClient.invalidateQueries({ queryKey: ['columns'] })
         }
       })
     }
@@ -219,8 +226,12 @@ const Inspection: React.FC = () => {
           user={user}
           workers={workers}
           card={selectedCard}
-          columns={columns}
         />
+
+        <Detail
+          isDetailOpen={isDetailOpen}
+          onDetailClose={onDetailClose}
+          card={selectedCard} />
 
         <>
           <IonActionSheet
@@ -258,8 +269,7 @@ const Inspection: React.FC = () => {
               {
                 text: 'Details',
                 handler: () => {
-                  console.log('In Progress is selected');
-                  close();
+                  onDetailOpen()
                 },
                 icon: informationCircle,
               },

@@ -1,7 +1,7 @@
 import { Columns, Task, Worker, User, Column, ColumnFormInput, reOrderInput } from "./types";
 
 const BASE_URL = "http://localhost:3000/api/v1/";
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4ODQ5MTQ4MiwiZXhwIjoxNjg4NDk1MDgyfQ.lMZOm809pWbZqoD0h7-7vSikEng91oHaRhMxDXfuLo8";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4ODgzNDI0MywiZXhwIjoxNjg4ODM3ODQzfQ.0ipRoBVTF8RqgHm62ykKSIbiol1M2M_f0hJdx3xRmDU";
 const headers = {
   Authorization: "Bearer " + token,
   "Content-Type": "application/json",
@@ -54,6 +54,17 @@ export const editTask = async (data: { body: FormData, id: string }): Promise<Ta
 export const deleteTask = async (id: string): Promise<Task> => {
   const response = await fetch(BASE_URL + `task/${id}`, {
     method: "DELETE",
+    headers,
+  });
+  if (!response.ok) throw new Error(response.statusText);
+  const task = await response.json();
+  return task?.data;
+};
+
+
+export const getTask = async (id: string): Promise<Task> => {
+  const response = await fetch(BASE_URL + `task/${id}`, {
+    method: "GET",
     headers,
   });
   if (!response.ok) throw new Error(response.statusText);
