@@ -26,6 +26,7 @@
     "@tanstack/react-query-devtools": "^4.29.19",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
+    "date-fns": "^2.30.0",
     "framer-motion": "^10.12.17",
     "ionicons": "^7.0.0",
     "react": "^18.2.0",

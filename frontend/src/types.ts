@@ -22,6 +22,16 @@ export type User = {
     AssignedTasks: Task[]
 }
 
+export type History = {
+    id: number,
+    taskId: string,
+    task: Task,
+    status: string,
+    assignedWorker: string,
+    changedAt: Date
+
+}
+
 export type Task = {
     id: string
     vehReg: string
@@ -34,6 +44,7 @@ export type Task = {
     createdAt: Date
     updatedAt: Date
     column: Column
+    history: History[]
 }
 
 export type Column = {
@@ -56,6 +67,7 @@ export type reOrderInput = {
     columnId: string,
     taskId: string,
     newPosition: number,
+    columnTitle: string
 }
 
 export type Worker = Pick<User, "id" | "firstName" | "lastName">;

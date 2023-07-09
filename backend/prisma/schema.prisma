@@ -35,6 +35,7 @@ model History {
   taskId    String
   task      Task     @relation(fields: [taskId], references: [id])
   status    String
+  assignedWorker    String
   changedAt DateTime @default(now())
 }
 
@@ -58,7 +59,7 @@ model Task {
 model Column {
   id        String   @id @default(uuid())
   title     String   @db.VarChar(50)
-  tasks      Task[]
+  tasks     Task[]
   position  Int      @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

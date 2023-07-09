@@ -31,6 +31,7 @@ export const findAll = async (_req, res) => {
                                 password: false,
                             },
                         },
+                        history: true,
                     },
                     orderBy: {
                         position: 'asc',

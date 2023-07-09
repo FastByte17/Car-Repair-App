@@ -5,11 +5,15 @@ import {
     ModalContent,
     ModalHeader,
     Text,
-    Stack
+    Stack,
+    OrderedList,
+    ListItem
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { Columns, Task } from '../../types'
 import { useQueryClient } from '@tanstack/react-query';
+import { formatDistance } from 'date-fns';
+
 
 
 
@@ -40,14 +44,14 @@ export default function Detail({ isDetailOpen, onDetailClose, card }: Props) {
             <ModalOverlay />
             {value && <ModalContent>
                 <ModalHeader paddingLeft={'17px'}>{value.vehReg}</ModalHeader>
-                <Container className='dialogue'>
+                <Container className='dialogue' maxH={'550px'} overflow={'scroll'}>
                     <Stack spacing={1} marginBottom={5}>
                         <Text>Status</Text>
                         <Text fontSize={'lg'}>{status}</Text>
                     </Stack>
                     <Stack spacing={1} marginBottom={5}>
                         <Text>Assigned Worker</Text>
-                        <Text>{value.assigned.firstName} {value.assigned.lastName}</Text>
+                        <Text fontSize={'lg'}>{value.assigned.firstName} {value.assigned.lastName}</Text>
                     </Stack>
                     <Stack spacing={1} marginBottom={5}>
                         <Text>Last Updated</Text>
@@ -58,8 +62,28 @@ export default function Detail({ isDetailOpen, onDetailClose, card }: Props) {
                         <Text fontSize={'lg'}>{value.note}</Text>
                     </Stack>
                     <Stack spacing={1} marginBottom={5}>
-                        <Text fontSize={'lg'} >History</Text>
-                        <Text fontSize={'lg'}>{ }</Text>
+                        <Text>History</Text>
+                        <OrderedList>{value.history.map((record, i) => {
+                            let startDate: Date;
+                            let endDate: Date;
+                            if (value.history[i + 1]?.changedAt) {
+                                startDate = new Date(record.changedAt)
+                                endDate = new Date(value.history[i + 1].changedAt)
+                            } else {
+                                startDate = new Date(record.changedAt)
+                                endDate = new Date(Date.now())
+                            }
+                            const duration = formatDistance(startDate, endDate);
+                            return (
+                                <ListItem key={record.id}>
+                                    Worker: {record.assignedWorker} ----
+                                    Time: {new Date(record.changedAt).toDateString()} ----
+                                    Duration: {duration} ----
+                                    Status: {record.status}
+                                </ListItem>
+                            )
+                        })}
+                        </OrderedList>
                     </Stack>
                 </Container>
             </ModalContent>}

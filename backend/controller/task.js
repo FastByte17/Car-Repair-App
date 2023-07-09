@@ -123,21 +123,27 @@ export const deleteTask = async (req, res) => {
 
 export const reOrder = async (req, res) => {
     try {
-        const { columnId: newColumnId, taskId, newPosition } = req.body;
+        const { columnId: newColumnId, taskId, newPosition, columnTitle } = req.body;
         const task = await prisma.task.findFirst({
             where: { id: taskId },
             include: {
-                history: true,
+                history: {
+                    orderBy: { changedAt: 'desc' },
+                },
+                assigned: true
             }
         });
-        const column = await prisma.column.findFirst({ where: { id: newColumnId } })
-        let updatedHistory = task.history
-        if (task.history[task.history.length - 1].status !== column.title) {
-            updatedHistory = [...task.history.map(h => { h.status, h.changedAt }), {
-                status: column.title,
-                changedAt: Date.now()
-            }];
+
+        if (task.history[0].status !== columnTitle) {
+            await prisma.history.create({
+                data: {
+                    status: columnTitle,
+                    assignedWorker: `${task.assigned.firstName} ${task.assigned.lastName}`,
+                    task: { connect: { id: taskId } },
+                }
+            })
         }
+
         const newTask = await prisma.task.update({
             data: {
                 position: newPosition,
@@ -219,13 +225,15 @@ export const create = async (req, res) => {
                 file.filename
         );
 
+        const assignedWorker = await prisma.user.findFirst({ where: { id: assigned } })
+
         const newTask = await prisma.task.create({
             data: {
                 ...req.body,
                 assignee: { connect: { id: req.user.id } },
                 assigned: { connect: { id: assigned } },
                 column: { connect: { id: column } },
-                history: { create: [{ status: "In Progress" }] },
+                history: { create: [{ status: "In Progress", assignedWorker: `${assignedWorker.firstName} ${assignedWorker.lastName}` }] },
                 images,
             },
             include: {

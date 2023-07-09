@@ -45,7 +45,7 @@ const Inspection: React.FC = () => {
   const { data: workers, status: workersStatus } = useQuery<Worker[], Error>({ queryKey: ['workers'], queryFn: fetchWorkers });
   const { mutate, isError, error: addTaskError } = useMutation<Task, Error, FormData, unknown>({ mutationKey: ['addTask'], mutationFn: addTask });
   const { mutate: createColumn } = useMutation<Column, Error, ColumnFormInput, unknown>({ mutationKey: ['addColumn'], mutationFn: addColumn });
-  const { mutate: reorderTasks, data: reOrderData } = useMutation<Task[], Error, reOrderInput, unknown>({ mutationKey: ['reorderTasks'], mutationFn: reOrder });
+  const { mutate: reorderTasks } = useMutation<Task[], Error, reOrderInput, unknown>({ mutationKey: ['reorderTasks'], mutationFn: reOrder });
   const { mutate: deleteATask } = useMutation<Task, Error, string, unknown>({ mutationKey: ['deleteTask'], mutationFn: deleteTask });
   const [selectListVisible, setSelectListVisible] = useState(false);
   const [columnTitle, setColumnTitle] = useState('');
@@ -149,7 +149,7 @@ const Inspection: React.FC = () => {
         }
       }
 
-      reorderTasks({ columnId: result.destination.droppableId, taskId: result.draggableId, newPosition: (result.destination.index + 1) }, {
+      reorderTasks({ columnId: result.destination.droppableId, taskId: result.draggableId, newPosition: (result.destination.index + 1), columnTitle: destinationColumn?.title ?? '' }, {
         onSuccess: () => {
           queryClient.setQueryData(['columns'], newColumns)
           queryClient.invalidateQueries({ queryKey: ['columns'] })
