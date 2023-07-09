@@ -84,6 +84,7 @@ const Inspection: React.FC = () => {
       mutate(task, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['columns'] })
+          queryClient.invalidateQueries({ queryKey: ['workers'] })
         }
       })
     }
@@ -153,6 +154,7 @@ const Inspection: React.FC = () => {
         onSuccess: () => {
           queryClient.setQueryData(['columns'], newColumns)
           queryClient.invalidateQueries({ queryKey: ['columns'] })
+          queryClient.invalidateQueries({ queryKey: ['workers'] })
         }
       })
     }

@@ -12,11 +12,12 @@ export const getWorkers = async (_req, res) => {
             where: {
                 role: 'EMPLOYEE',
             },
-            select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                password: false,
+            include: {
+                MyTasks: {
+                    include: {
+                        column: true,
+                    }
+                },
             }
         })
 
