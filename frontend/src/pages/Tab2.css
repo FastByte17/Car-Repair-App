@@ -8,8 +8,8 @@
     padding: 1em 0;
     overflow-x: scroll;
     overflow-y: hidden;
-    
-    
+    background: inherit;    
+
 }
 
 .column-item {
@@ -41,8 +41,7 @@
     background: rgb(56, 55, 55);
 }
 
-.cardTitle,
-p {
+.cardTitle {
     font-size: clamp(1rem, 2.2vw, 1.8rem);
     color: black;
 }

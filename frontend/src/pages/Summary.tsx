@@ -35,17 +35,12 @@ const Summary: React.FC = () => {
                         </Thead>
                         {workers && <Tbody>
                             {workers?.map((worker) => {
-                                const inProgress = worker.MyTasks.filter(task => task.column.title === 'In Progress').length;
-                                const onHold = worker.MyTasks.filter(task => task.column.title === 'On Hold').length;
-                                const carWash = worker.MyTasks.filter(task => task.column.title === 'Car Wash').length;
-                                const done = worker.MyTasks.filter(task => task.column.title === 'Done').length;
                                 return (
                                     <Tr key={worker.id}>
                                         <Th color={'white'}>{worker.firstName} {worker.lastName}</Th>
-                                        <Th color={'white'}>{inProgress}</Th>
-                                        <Th color={'white'}>{onHold}</Th>
-                                        <Th color={'white'}>{carWash}</Th>
-                                        <Th color={'white'}>{done}</Th>
+                                        {columns.map((column) => (
+                                            <Th color={'white'} key={column.id}>{worker.MyTasks.filter(task => task.column.title === column.title).length}</Th>
+                                        ))}
                                     </Tr>
                                 )
                             })}

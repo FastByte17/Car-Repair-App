@@ -1,7 +1,7 @@
-import { Columns, Task, Worker, User, Column, ColumnFormInput, reOrderInput } from "./types";
+import { Columns, Task, Worker, User, Column, ColumnFormInput, reOrderInput, reOrderColumnInput } from "./types";
 
 const BASE_URL = "http://localhost:3000/api/v1/";
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4ODkyNDIwNSwiZXhwIjoxNjg4OTI3ODA1fQ.20TRqwuvirkgp6SKQ2-YcS53MP8mrFXFRSjKpdBKVwM";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4OTAxMDEyOSwiZXhwIjoxNjg5MDEzNzI5fQ.mdDYri9LnUzhy5YdHv8bLK3iAOG7BLa9qatCq6vKpQQ";
 const headers = {
   Authorization: "Bearer " + token,
   "Content-Type": "application/json",
@@ -73,8 +73,19 @@ export const getTask = async (id: string): Promise<Task> => {
 };
 
 
-export const reOrder = async (data: reOrderInput): Promise<Task[]> => {
-  const response = await fetch(BASE_URL + "task", {
+export const reOrder = async (data: reOrderInput): Promise<Task> => {
+  const response = await fetch(BASE_URL + `task`, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error(response.statusText);
+  const task = await response.json();
+  return task?.data;
+};
+
+export const reOrderColumn = async (data: reOrderColumnInput): Promise<Column> => {
+  const response = await fetch(BASE_URL + `column/${data.columnId}`, {
     method: "PATCH",
     headers,
     body: JSON.stringify(data),

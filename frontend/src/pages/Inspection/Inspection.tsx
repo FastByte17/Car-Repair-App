@@ -26,12 +26,12 @@ import '../Tab2.css';
 import { useState, FormEvent } from 'react';
 import { add, trash, create, informationCircle } from 'ionicons/icons';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchColumns, fetchWorkers, fetchCurrentUser, addTask, addColumn, reOrder, deleteTask } from '../../api'
-import { Columns, TaskForm, Worker, User, Role, Task, Column, ColumnFormInput, reOrderInput } from '../../types'
-import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
-import Card from './Card'
+import { fetchColumns, fetchWorkers, fetchCurrentUser, addTask, addColumn, reOrder, deleteTask, reOrderColumn } from '../../api'
+import { Columns, TaskForm, Worker, User, Role, Task, Column, ColumnFormInput, reOrderInput, reOrderColumnInput } from '../../types'
+import { DropResult } from "react-beautiful-dnd";
 import EditTask from './EditTask';
 import Detail from './Detail';
+import ColumnItem from './ColumnItem'
 
 
 const Inspection: React.FC = () => {
@@ -45,7 +45,8 @@ const Inspection: React.FC = () => {
   const { data: workers, status: workersStatus } = useQuery<Worker[], Error>({ queryKey: ['workers'], queryFn: fetchWorkers });
   const { mutate, isError, error: addTaskError } = useMutation<Task, Error, FormData, unknown>({ mutationKey: ['addTask'], mutationFn: addTask });
   const { mutate: createColumn } = useMutation<Column, Error, ColumnFormInput, unknown>({ mutationKey: ['addColumn'], mutationFn: addColumn });
-  const { mutate: reorderTasks } = useMutation<Task[], Error, reOrderInput, unknown>({ mutationKey: ['reorderTasks'], mutationFn: reOrder });
+  const { mutate: reorderTasks } = useMutation<Task, Error, reOrderInput, unknown>({ mutationKey: ['reorderTasks'], mutationFn: reOrder });
+  const { mutate: reorderColumns } = useMutation<Column, Error, reOrderColumnInput, unknown>({ mutationKey: ['reorderColumns'], mutationFn: reOrderColumn });
   const { mutate: deleteATask } = useMutation<Task, Error, string, unknown>({ mutationKey: ['deleteTask'], mutationFn: deleteTask });
   const [selectListVisible, setSelectListVisible] = useState(false);
   const [columnTitle, setColumnTitle] = useState('');
@@ -133,38 +134,49 @@ const Inspection: React.FC = () => {
       return;
     }
 
+
+
     if (columns) {
-      const newColumns = Array.from(columns)
-      const sourceColumn = newColumns.find(column => column.id === result.source.droppableId)
-      const destinationColumn = newColumns.find(column => column.id === result.destination?.droppableId)
-      if (sourceColumn && destinationColumn) {
-        const newTask = sourceColumn.tasks.find(task => task.id === result.draggableId)
-        if (sourceColumn === destinationColumn && newTask) {
-          newColumns[newColumns.indexOf(sourceColumn)].tasks.splice(result.source.index, 1)
-          newColumns[newColumns.indexOf(sourceColumn)].tasks.splice(result.destination.index, 0, newTask)
-        } else {
-          if (newTask) {
+      if (result.type === 'column') {
+        const newColumns = Array.from(columns)
+        const columnItem = newColumns.find(column => column.id === result.draggableId)
+        if (columnItem) {
+          newColumns.splice(result.source.index, 1)
+          newColumns.splice(result.destination.index, 0, columnItem)
+          queryClient.setQueryData(['columns'], newColumns)
+          reorderColumns({ columnId: result.draggableId, newPosition: (result.destination.index + 1), oldPosition: columnItem.position, title: columnItem?.title ?? '' }, {
+            onSuccess: () => {
+              queryClient.invalidateQueries({ queryKey: ['columns'] })
+            }
+          })
+        }
+      } else {
+        const newColumns = Array.from(columns)
+        const sourceColumn = newColumns.find(column => column.id === result.source.droppableId)
+        const destinationColumn = newColumns.find(column => column.id === result.destination?.droppableId)
+        if (sourceColumn && destinationColumn) {
+          const newTask = sourceColumn.tasks.find(task => task.id === result.draggableId)
+          if (sourceColumn === destinationColumn && newTask) {
             newColumns[newColumns.indexOf(sourceColumn)].tasks.splice(result.source.index, 1)
-            newColumns[newColumns.indexOf(destinationColumn)].tasks.splice(result.destination.index, 0, newTask)
+            newColumns[newColumns.indexOf(sourceColumn)].tasks.splice(result.destination.index, 0, newTask)
+          } else {
+            if (newTask) {
+              newColumns[newColumns.indexOf(sourceColumn)].tasks.splice(result.source.index, 1)
+              newColumns[newColumns.indexOf(destinationColumn)].tasks.splice(result.destination.index, 0, newTask)
+            }
           }
+          reorderTasks({ columnId: result.destination.droppableId, taskId: result.draggableId, newPosition: (result.destination.index + 1), columnTitle: destinationColumn?.title ?? '' }, {
+            onSuccess: () => {
+              queryClient.setQueryData(['columns'], newColumns)
+              queryClient.invalidateQueries({ queryKey: ['workers'] })
+            }
+          })
         }
       }
-
-      reorderTasks({ columnId: result.destination.droppableId, taskId: result.draggableId, newPosition: (result.destination.index + 1), columnTitle: destinationColumn?.title ?? '' }, {
-        onSuccess: () => {
-          queryClient.setQueryData(['columns'], newColumns)
-          queryClient.invalidateQueries({ queryKey: ['columns'] })
-          queryClient.invalidateQueries({ queryKey: ['workers'] })
-        }
-      })
     }
 
   }
 
-  const getListStyle = (isDraggingOver: boolean) => ({
-    background: isDraggingOver ? "lightblue" : "lightgrey",
-    opacity: isDraggingOver ? 0.8 : 1,
-  });
 
 
   return (
@@ -181,44 +193,16 @@ const Inspection: React.FC = () => {
           </IonToolbar>
         </IonHeader>
 
-        {status === 'error' && <p>Error fetching data: {error?.message}</p>}
-        {status === 'loading' && <p>Loading...</p>}
-        {status === 'success' &&
-          <Container className="column-container" >
-            <DragDropContext onDragEnd={onDragEnd}>
-              {columns.map((item, _index) => (
-                <Droppable droppableId={item.id} key={item.id}>
-                  {(provided, snapshot) => (
-                    <Container
-                      className='column-item'
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                      style={getListStyle(snapshot.isDraggingOver)}
-                    >
-                      <p>{item.title}</p>
-                      <Card tasks={item.tasks} inspectionMenu={inspectionMenu} columnTitle={item.title} />
-                      {snapshot.isUsingPlaceholder && <div
-                        style={{
-                          opacity: 0, // Adjust the opacity of the placeholder
-                          background: 'transparent', // Set the background color of the placeholder to transparent
-                        }}
-                      >
-                        {provided.placeholder}
-                      </div>}
-                    </Container>
-                  )}
-                </Droppable>
-
-              ))}
-              <Container className='column-item'>
-                <form onSubmit={addColumnToDb} className='column-input'>
-                  <Input placeholder='add column' value={columnTitle} onChange={({ target }) => setColumnTitle(target.value)} />
-                  <Button type='submit'>Add column</Button>
-                </form>
-              </Container>
-            </DragDropContext>
-          </Container>
-        }
+        <ColumnItem
+          status={status}
+          columns={columns}
+          error={error}
+          onDragEnd={onDragEnd}
+          addColumnToDb={addColumnToDb}
+          columnTitle={columnTitle}
+          setColumnTitle={setColumnTitle}
+          inspectionMenu={inspectionMenu}
+        />
 
         <EditTask
           showEditModal={isEditOpen}
@@ -230,10 +214,10 @@ const Inspection: React.FC = () => {
           card={selectedCard}
         />
 
-        <Detail
+        {false && <Detail
           isDetailOpen={isDetailOpen}
           onDetailClose={onDetailClose}
-          card={selectedCard} />
+          card={selectedCard} />}
 
         <>
           <IonActionSheet
@@ -337,5 +321,6 @@ const Inspection: React.FC = () => {
     </IonPage >
   );
 };
+
 
 export default Inspection;

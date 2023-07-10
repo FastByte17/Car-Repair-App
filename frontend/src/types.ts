@@ -70,6 +70,13 @@ export type reOrderInput = {
     columnTitle: string
 }
 
+export type reOrderColumnInput = {
+    columnId: string,
+    newPosition: number,
+    oldPosition: number,
+    title: string
+}
+
 export type Worker = Pick<User, "id" | "firstName" | "lastName" | "MyTasks">;
 export type ColumnFormInput = Pick<Column, "title">;
 

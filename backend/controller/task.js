@@ -123,7 +123,7 @@ export const deleteTask = async (req, res) => {
 
 export const reOrder = async (req, res) => {
     try {
-        const { columnId: newColumnId, taskId, newPosition, columnTitle } = req.body;
+        const { columnId: newColumnId, newPosition, columnTitle, taskId } = req.body;
         const task = await prisma.task.findFirst({
             where: { id: taskId },
             include: {

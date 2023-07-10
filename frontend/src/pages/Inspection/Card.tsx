@@ -1,24 +1,24 @@
-import React from 'react'
 import {
     IonCard, IonCardHeader, IonCardSubtitle,
     IonCardTitle,
 } from '@ionic/react';
 import {
-    Text
+    Text,
+    Container
 } from '@chakra-ui/react'
-import { Tasks, DraggableStyleType } from '../../types'
-import { Draggable } from "react-beautiful-dnd";
+import { DraggableStyleType, Column } from '../../types'
+import { Draggable, Droppable } from "react-beautiful-dnd";
+
 
 
 
 type Props = {
-    tasks: Tasks,
     inspectionMenu: (taskId: string, columnId: string) => void,
-    columnTitle: string
+    column: Column
 }
 
 
-const getItemStyle = (isDragging: boolean, draggableStyle: DraggableStyleType) => ({
+const getItemStyle = (_isDragging: boolean, draggableStyle: DraggableStyleType) => ({
     // some basic styles to make the items look a bit nicer
     userSelect: "none",
     padding: 8 * 2,
@@ -26,36 +26,60 @@ const getItemStyle = (isDragging: boolean, draggableStyle: DraggableStyleType) =
     ...draggableStyle
 });
 
-const Card = ({ tasks, inspectionMenu, columnTitle }: Props) => {
-    const color = columnTitle === "In Progress" ? "warning" : (columnTitle === "On Hold" ? "danger" : (columnTitle === "Car Wash" ? "secondary" : "success"));
+const getListStyle = (isDraggingOver: boolean) => ({
+    background: isDraggingOver ? "lightblue" : "inherit",
+    opacity: isDraggingOver ? 0.8 : 1,
+    minHeight: 'fit-content',
+    padding: '10px',
+});
+
+
+const Card = ({ inspectionMenu, column }: Props) => {
+    const color = column.title === "In Progress" ? "warning" : (column.title === "On Hold" ? "danger" : (column.title === "Car Wash" ? "secondary" : "success"));
+
     return (
-        <div>
-            {tasks.map((task, index) => (
-                <Draggable key={task.id} draggableId={task.id} index={index}>
-                    {(provided, snapshot) => (
-                        <IonCard
-                            color={color}
-                            button={true}
-                            onClick={() => inspectionMenu(task.id, task.columnId)}
-                            key={task.id}
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            style={getItemStyle(
-                                snapshot.isDragging,
-                                provided.draggableProps.style
+        <Droppable droppableId={column.id}>
+            {(provided, snapshot) => (
+                <Container
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    style={getListStyle(snapshot.isDraggingOver)}>
+                    {column.tasks.map((task, index) => (
+                        <Draggable key={task.id} draggableId={task.id} index={index}>
+                            {(provided, snapshot) => (
+                                <IonCard
+                                    color={color}
+                                    button={true}
+                                    onClick={() => inspectionMenu(task.id, task.columnId)}
+                                    key={task.id}
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    style={getItemStyle(
+                                        snapshot.isDragging,
+                                        provided.draggableProps.style
+                                    )}
+                                >
+                                    <IonCardHeader>
+                                        <IonCardTitle className='cardTitle'>{task.vehReg}</IonCardTitle>
+                                        <IonCardSubtitle>Assigned to: {task.assigned.lastName}</IonCardSubtitle>
+                                    </IonCardHeader>
+                                    <Text fontSize={'sm'} noOfLines={2}>{task.note}</Text>
+                                </IonCard>
                             )}
-                        >
-                            <IonCardHeader>
-                                <IonCardTitle className='cardTitle'>{task.vehReg}</IonCardTitle>
-                                <IonCardSubtitle>Assigned to: {task.assigned.lastName}</IonCardSubtitle>
-                            </IonCardHeader>
-                            <Text fontSize={'sm'} noOfLines={2}>{task.note}</Text>
-                        </IonCard>
-                    )}
-                </Draggable >
-            ))}
-        </div>
+                        </Draggable >
+                    ))}
+                    {snapshot.isUsingPlaceholder && <div
+                        style={{
+                            opacity: 0, // Adjust the opacity of the placeholder
+                            background: 'transparent', // Set the background color of the placeholder to transparent
+                        }}
+                    >
+                        {provided.placeholder}
+                    </div>}
+                </Container>
+            )}
+        </Droppable >
     )
 }
 
