@@ -77,6 +77,11 @@ export type reOrderColumnInput = {
     title: string
 }
 
+export type EditColumn = {
+    title: string,
+    id: string,
+}
+
 export type Worker = Pick<User, "id" | "firstName" | "lastName" | "MyTasks">;
 export type ColumnFormInput = Pick<Column, "title">;
 

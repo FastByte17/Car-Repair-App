@@ -214,54 +214,52 @@ const Inspection: React.FC = () => {
           card={selectedCard}
         />
 
-        {false && <Detail
+        <Detail
           isDetailOpen={isDetailOpen}
           onDetailClose={onDetailClose}
-          card={selectedCard} />}
+          card={selectedCard} />
 
-        <>
-          <IonActionSheet
-            isOpen={selectListVisible}
-            onDidDismiss={closeInspectionMenu}
-            cssClass="my-action-sheet"
-            buttons={[
-              {
-                text: 'Delete',
-                handler: async () => {
-                  if (selectedCard.taskId) {
-                    deleteATask(selectedCard.taskId, {
-                      onSuccess: () => {
-                        queryClient.invalidateQueries({ queryKey: ['columns'] })
-                        toast({
-                          title: 'task was deleted',
-                          status: 'error',
-                          duration: 5000,
-                          isClosable: true,
-                        })
-                      }
-                    })
-                  }
-                  close();
-                },
-                icon: trash,
+        <IonActionSheet
+          isOpen={selectListVisible}
+          onDidDismiss={closeInspectionMenu}
+          cssClass="my-action-sheet"
+          buttons={[
+            {
+              text: 'Delete',
+              handler: async () => {
+                if (selectedCard.taskId) {
+                  deleteATask(selectedCard.taskId, {
+                    onSuccess: () => {
+                      queryClient.invalidateQueries({ queryKey: ['columns'] })
+                      toast({
+                        title: 'task was deleted',
+                        status: 'error',
+                        duration: 5000,
+                        isClosable: true,
+                      })
+                    }
+                  })
+                }
+                close();
               },
-              {
-                text: 'Edit',
-                handler: () => {
-                  onEditOpen();
-                },
-                icon: create,
+              icon: trash,
+            },
+            {
+              text: 'Edit',
+              handler: () => {
+                onEditOpen();
               },
-              {
-                text: 'Details',
-                handler: () => {
-                  onDetailOpen()
-                },
-                icon: informationCircle,
+              icon: create,
+            },
+            {
+              text: 'Details',
+              handler: () => {
+                onDetailOpen()
               },
-            ]}
-          />
-        </>
+              icon: informationCircle,
+            },
+          ]}
+        />
 
         <IonFab slot='fixed' vertical='bottom' horizontal='end'>
           <IonFabButton onClick={onOpen}>

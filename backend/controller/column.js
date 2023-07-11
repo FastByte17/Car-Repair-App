@@ -64,7 +64,7 @@ export const create = async (req, res) => {
 
 export const deleteColumn = async (req, res) => {
     try {
-        const columnId = req.query.columnId;
+        const columnId = req.params.columnId;
         const column = await prisma.column.delete({
             where: { id: columnId },
         });
@@ -113,6 +113,22 @@ export const reOrder = async (req, res) => {
             data: {
                 title,
                 position: newPosition
+            },
+            where: { id: columnId },
+        });
+        res.status(201).json({ data: newCol });
+    } catch (error) {
+        res.status(401).json({ message: error.message });
+    }
+}
+
+export const updateColumn = async (req, res) => {
+    try {
+        const columnId = req.params.columnId;
+        const { title } = req.body;
+        const newCol = await prisma.column.update({
+            data: {
+                title,
             },
             where: { id: columnId },
         });

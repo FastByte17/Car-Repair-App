@@ -1,7 +1,7 @@
-import { Columns, Task, Worker, User, Column, ColumnFormInput, reOrderInput, reOrderColumnInput } from "./types";
+import { Columns, Task, Worker, User, Column, ColumnFormInput, reOrderInput, reOrderColumnInput, EditColumn } from "./types";
 
 const BASE_URL = "http://localhost:3000/api/v1/";
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4OTAxMDEyOSwiZXhwIjoxNjg5MDEzNzI5fQ.mdDYri9LnUzhy5YdHv8bLK3iAOG7BLa9qatCq6vKpQQ";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4OTA5MjY0NSwiZXhwIjoxNjg5MDk2MjQ1fQ.8d94SVqk9wmo4xpWNdEpkMEVdXX0ORiCyY8Hg1IKjgI";
 const headers = {
   Authorization: "Bearer " + token,
   "Content-Type": "application/json",
@@ -104,6 +104,27 @@ export const addColumn = async (data: ColumnFormInput): Promise<Column> => {
   if (!response.ok) throw new Error(response.statusText);
   const column = await response.json();
   return column?.data;
+};
+
+export const deleteColumn = async (id: string): Promise<Column> => {
+  const response = await fetch(BASE_URL + `column/${id}`, {
+    method: "DELETE",
+    headers,
+  });
+  if (!response.ok) throw new Error(response.statusText);
+  const task = await response.json();
+  return task?.data;
+};
+
+export const editColumn = async (data: EditColumn): Promise<Column> => {
+  const response = await fetch(BASE_URL + `column/edit/${data.id}`, {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error(response.statusText);
+  const task = await response.json();
+  return task?.data;
 };
 
 export const fetchWorkers = async (): Promise<Worker[]> => {

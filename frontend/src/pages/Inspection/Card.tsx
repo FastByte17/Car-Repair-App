@@ -22,7 +22,6 @@ const getItemStyle = (_isDragging: boolean, draggableStyle: DraggableStyleType) 
     // some basic styles to make the items look a bit nicer
     userSelect: "none",
     padding: 8 * 2,
-    margin: `0 0 ${8}px 0`,
     ...draggableStyle
 });
 
@@ -30,7 +29,7 @@ const getListStyle = (isDraggingOver: boolean) => ({
     background: isDraggingOver ? "lightblue" : "inherit",
     opacity: isDraggingOver ? 0.8 : 1,
     minHeight: 'fit-content',
-    padding: '10px',
+    padding: '.2px',
 });
 
 
