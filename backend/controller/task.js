@@ -101,9 +101,21 @@ export const update = async (req, res) => {
 export const deleteTask = async (req, res) => {
     try {
         const taskId = req.params.taskId;
-        const task = await prisma.task.delete({
-            where: { id: taskId },
-        });
+        let task
+        if (req.user.role !== 'ADMIN') {
+            const deletedColumn = await prisma.column.findFirst({ where: { title: 'Deleted' } })
+            if (!deletedColumn) return res.status(201).json({ data: 'Deleted column does not exist' });
+            task = await prisma.task.update({
+                where: { id: taskId },
+                data: {
+                    isHidden: true, column: { connect: { id: deletedColumn.id } },
+                }
+            });
+        } else {
+            task = await prisma.task.delete({
+                where: { id: taskId },
+            });
+        }
         await prisma.task.updateMany({
             data: { position: { decrement: 1 } },
             where: {

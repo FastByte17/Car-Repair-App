@@ -6,8 +6,9 @@ import {
     Text,
     Container
 } from '@chakra-ui/react'
-import { DraggableStyleType, Column } from '../../types'
+import { DraggableStyleType, Column, User } from '../../types'
 import { Draggable, Droppable } from "react-beautiful-dnd";
+import { useQueryClient } from '@tanstack/react-query';
 
 
 
@@ -34,6 +35,7 @@ const getListStyle = (isDraggingOver: boolean) => ({
 
 
 const Card = ({ inspectionMenu, column }: Props) => {
+    const user = useQueryClient().getQueryData<User>(['user']);
     const color = column.title === "In Progress" ? "warning" : (column.title === "On Hold" ? "danger" : (column.title === "Car Wash" ? "secondary" : "success"));
 
     return (
@@ -43,7 +45,7 @@ const Card = ({ inspectionMenu, column }: Props) => {
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                     style={getListStyle(snapshot.isDraggingOver)}>
-                    {column.tasks.map((task, index) => (
+                    {column.tasks.filter(task => user?.role === 'ADMIN' ? true : !task.isHidden).map((task, index) => (
                         <Draggable key={task.id} draggableId={task.id} index={index}>
                             {(provided, snapshot) => (
                                 <IonCard

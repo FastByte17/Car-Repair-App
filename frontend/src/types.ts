@@ -36,6 +36,7 @@ export type Task = {
     id: string
     vehReg: string
     note: string
+    isHidden: boolean
     images: string
     position: number
     columnId: string

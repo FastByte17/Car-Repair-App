@@ -33,7 +33,7 @@ model User {
 model History {
   id        Int   @id @default(autoincrement())
   taskId    String
-  task      Task     @relation(fields: [taskId], references: [id])
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
   status    String
   assignedWorker    String
   changedAt DateTime @default(now())
@@ -43,6 +43,7 @@ model Task {
   id         String   @id @default(uuid())
   vehReg     String   @db.VarChar(50)
   note       String
+  isHidden   Boolean  @default(false)
   images     String[] @default([])
   column     Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
   assigned   User     @relation("assigned", fields: [assignedId], references: [id], onDelete: Cascade)
@@ -58,7 +59,7 @@ model Task {
 
 model Column {
   id        String   @id @default(uuid())
-  title     String   @db.VarChar(50)
+  title     String   @db.VarChar(50) @unique
   tasks     Task[]
   position  Int      @default(autoincrement())
   createdAt DateTime @default(now())

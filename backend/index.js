@@ -10,7 +10,7 @@ import { protect } from "./controller/auth.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
-dotenv.config({ path: ".env" });
+dotenv.config();
 app.use(express.static("uploads"));
 app.use(cors());
 app.use(express.json());

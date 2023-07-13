@@ -1,10 +1,15 @@
 import prisma from "../prisma/client.js";
 
-export const findAll = async (_req, res) => {
+
+export const findAll = async (req, res) => {
     try {
+        const isHidden = !(req.user.role === 'ADMIN')
         const columns = await prisma.column.findMany({
             orderBy: {
                 position: 'asc',
+            },
+            where: {
+                ...(isHidden ? { title: { notIn: process.env.HIDDEN_COLUMNS.split(' ') } } : {}),
             },
             include: {
                 tasks: {
@@ -16,6 +21,7 @@ export const findAll = async (_req, res) => {
                         position: true,
                         createdAt: true,
                         updatedAt: true,
+                        isHidden: true,
                         columnId: true,
                         column: false,
                         assigned: {
