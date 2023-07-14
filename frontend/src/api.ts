@@ -1,7 +1,7 @@
 import { Columns, Task, Worker, User, Column, ColumnFormInput, reOrderInput, reOrderColumnInput, EditColumn } from "./types";
 
 const BASE_URL = "http://localhost:3000/api/v1/";
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBmMWFhMzliLWNlMWItNDE4Mi05ODljLWI2NzUyNWY3YzUyMyIsImlhdCI6MTY4OTI2NTQyMywiZXhwIjoxNjg5MjY5MDIzfQ.0FzkcwjRm1-LHuLaoKcsm8UsPmesItJtj-EMfDLwCms";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4OTM0MTQ4MSwiZXhwIjoxNjg5MzQ1MDgxfQ.38NkFEM12cddjSnSHa-g6imq9rYBZHRsaAdTIfhS5-4";
 const headers = {
   Authorization: "Bearer " + token,
   "Content-Type": "application/json",

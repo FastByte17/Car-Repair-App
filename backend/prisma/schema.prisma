@@ -22,6 +22,7 @@ model User {
   firstName     String
   lastName      String   @unique
   password      String
+  pin           String     
   phoneNumber   String   @unique
   role          Role     @default(EMPLOYEE)
   createdAt     DateTime @default(now())

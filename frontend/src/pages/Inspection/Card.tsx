@@ -22,7 +22,7 @@ type Props = {
 const getItemStyle = (_isDragging: boolean, draggableStyle: DraggableStyleType) => ({
     // some basic styles to make the items look a bit nicer
     userSelect: "none",
-    padding: 8 * 2,
+    padding: '4px 0px',
     ...draggableStyle
 });
 
@@ -61,10 +61,8 @@ const Card = ({ inspectionMenu, column }: Props) => {
                                         provided.draggableProps.style
                                     )}
                                 >
-                                    <IonCardHeader>
-                                        <IonCardTitle className='cardTitle'>{task.vehReg}</IonCardTitle>
-                                        <IonCardSubtitle>Assigned to: {task.assigned.lastName}</IonCardSubtitle>
-                                    </IonCardHeader>
+                                    <Text className='cardTitle'>{task.vehReg}</Text>
+                                    <Text>{task.assigned.lastName}</Text>
                                     <Text fontSize={'sm'} noOfLines={2}>{task.note}</Text>
                                 </IonCard>
                             )}

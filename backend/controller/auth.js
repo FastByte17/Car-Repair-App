@@ -17,7 +17,7 @@ export const verifyToken = async (token) => {
 
 }
 
-export const checkPassword = (password, passwordHash) => {
+export const checkPin = (password, passwordHash) => {
     return new Promise((resolve, reject) => {
         bcrypt.compare(password, passwordHash, (err, same) => {
             if (err) {
@@ -65,8 +65,10 @@ export const register = async (req, res) => {
         delete req.body.confirmPassword
         bcrypt.hash(req.body.password, 8, async (err, hash) => {
             if (err) throw Error(err)
+            const { pin } = req.body
+            const pinhash = await bcrypt.hash(pin, 10)
             const data = {
-                ...req.body, password: hash, role: process.env.ADMIN_LIST?.includes(req.body.email) ? 'ADMIN' : (process.env.MANAGER_LIST?.includes(req.body.email) ? 'MANAGER' : 'EMPLOYEE')
+                ...req.body, pin: pinhash, password: hash, role: process.env.ADMIN_LIST?.includes(req.body.email) ? 'ADMIN' : (process.env.MANAGER_LIST?.includes(req.body.email) ? 'MANAGER' : 'EMPLOYEE')
             }
 
             try {
@@ -87,20 +89,11 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        const { email, password } = req.body
-        const user = await prisma.user.findFirst({
-            where: {
-                email
-            }
-        })
+        const { pin } = req.body
+        const users = await prisma.user.findMany();
+        const user = users.find(async (user) => await checkPin(pin, user.pin));
 
         if (!user) {
-            throw new Error(`invalid credentials!`)
-        }
-
-        const match = await checkPassword(password, user.password)
-
-        if (!match) {
             return res.status(401).send({ message: 'invalid credentials!' })
         }
 

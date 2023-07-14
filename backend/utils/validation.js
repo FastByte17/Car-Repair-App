@@ -18,6 +18,16 @@ const password = z
     .regex(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/, {
         message: "password must be alphanumeric",
     });
+const pin = z
+    .string({
+        required_error: "pin is required",
+        invalid_type_error: "pin must be a string",
+    }).transform((val) => {
+        if (val.length !== 4) {
+            throw new Error('pin must have 4 digits')
+        }
+        return val
+    })
 const confirmPassword = z
     .string({
         required_error: "confirmPassword is required",
@@ -43,13 +53,6 @@ const lastName = z
         invalid_type_error: "lastName must be a string",
     })
     .trim();
-
-const role = z.nativeEnum(
-    { EMPLOYEE: "EMPLOYEE", MANAGER: "MANAGER", ADMIN: "ADMIN" },
-    {
-        required_error: "role is required",
-    }
-);
 
 const vehReg = z
     .string({
@@ -130,6 +133,7 @@ export const registerSchema = z
             lastName,
             email,
             password,
+            pin,
             confirmPassword,
         }),
     })
@@ -146,13 +150,7 @@ export const registerSchema = z
 
 export const loginSchema = z.object({
     body: z.object({
-        email,
-        password: z
-            .string({
-                required_error: "password is required",
-                invalid_type_error: "password must be a string",
-            })
-            .trim(),
+        pin,
     }),
 });
 
