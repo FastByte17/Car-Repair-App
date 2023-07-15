@@ -6,7 +6,12 @@ export enum Role {
     MANAGER = "MANAGER",
     ADMIN = "ADMIN",
 }
-
+export type Report = {
+    id: number
+    userId: String
+    checkedIn: Date
+    checkedOut: Date
+}
 
 export type User = {
     id: string
@@ -15,11 +20,14 @@ export type User = {
     lastName: string
     password: string
     phoneNumber: string
+    pin: string
+    isCheckedIn: boolean
     role: Role
     createdAt: Date
     updatedAt: Date
     MyTasks: Task[]
     AssignedTasks: Task[]
+    report: Report[]
 }
 
 export type History = {

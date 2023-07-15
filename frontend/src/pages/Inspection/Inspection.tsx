@@ -2,7 +2,7 @@ import {
   IonActionSheet,
   IonContent, IonFab, IonFabButton,
   IonHeader, IonIcon,
-  IonPage, IonPopover, IonTitle, IonToolbar
+  IonPage, IonTitle, IonToolbar
 } from '@ionic/react';
 import {
   FormLabel,

@@ -16,19 +16,29 @@ enum Role {
   ADMIN
 }
 
+model Report {
+  id        Int   @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checkedIn DateTime @default(now())
+  checkedOut DateTime? 
+}
+
 model User {
   id            String   @id @default(uuid())
   email         String   @unique
   firstName     String
   lastName      String   @unique
   password      String
-  pin           String     
+  pin           String
+  isCheckedIn   Boolean  @default(false)  
   phoneNumber   String   @unique
   role          Role     @default(EMPLOYEE)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   MyTasks       Task[]   @relation("assigned")
   AssignedTasks Task[]   @relation("assignee")
+  report        Report[]
 }
 
 model History {

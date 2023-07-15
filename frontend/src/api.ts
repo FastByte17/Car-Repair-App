@@ -1,7 +1,7 @@
 import { Columns, Task, Worker, User, Column, ColumnFormInput, reOrderInput, reOrderColumnInput, EditColumn } from "./types";
 
 const BASE_URL = "http://localhost:3000/api/v1/";
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEyZmE3YWRmLTg4ZmEtNGNmMi1iM2QzLWIyODEzNTg0YzI1MiIsImlhdCI6MTY4OTM0MTQ4MSwiZXhwIjoxNjg5MzQ1MDgxfQ.38NkFEM12cddjSnSHa-g6imq9rYBZHRsaAdTIfhS5-4";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQ4NTIxOGQ3LWVhYjMtNDAxZi04Mzc1LTNkM2M0OTMyZGZjMyIsImlhdCI6MTY4OTQ0MzkxMCwiZXhwIjoxNjg5NDQ3NTEwfQ.VC3PXsF8mv1D4VuqzQEOCKzmi1ibitJtk2moEaGM7ZM";
 const headers = {
   Authorization: "Bearer " + token,
   "Content-Type": "application/json",
@@ -13,6 +13,16 @@ export const fetchCurrentUser = async (): Promise<User> => {
   const response = await fetch(BASE_URL + "user/me", {
     headers,
     method: "GET",
+  });
+  if (!response.ok) throw new Error(response.statusText);
+  const user = await response.json();
+  return user?.data;
+};
+
+export const changeCheckInStatus = async (): Promise<User> => {
+  const response = await fetch(BASE_URL + "user/check", {
+    headers,
+    method: "PATCH",
   });
   if (!response.ok) throw new Error(response.statusText);
   const user = await response.json();

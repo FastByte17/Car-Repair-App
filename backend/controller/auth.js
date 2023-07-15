@@ -48,6 +48,9 @@ export const protect = async (req, res, next) => {
     const user = await prisma.user.findFirst({
         where: {
             id: payload.id,
+        },
+        include: {
+            report: true,
         }
     })
 

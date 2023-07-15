@@ -1,8 +1,39 @@
+import React, { useEffect } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import { Text, Container, Button, Icon, Stack, Flex } from '@chakra-ui/react'
+import { FiClock } from 'react-icons/fi'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import './Tab3.css';
+import { User } from '../types';
+import { changeCheckInStatus, fetchCurrentUser } from '../api'
+import { format, parseISO } from 'date-fns'
+
 
 const Shifts: React.FC = () => {
+  const client = useQueryClient()
+  const { data: user, status } = useQuery<User, Error>({ queryKey: ['user'], queryFn: fetchCurrentUser });
+  const lastCheckOut = user && user.report.findLast(rep => rep.checkedOut !== null)
+  const { mutate: changeStatus, data: response } = useMutation<User, Error, any>({ mutationKey: ['checkIn'], mutationFn: changeCheckInStatus });
+
+
+  useEffect(() => {
+  }, [user])
+
+  const ChangeCheckInStatus = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault()
+    changeStatus({}, {
+      onSuccess: () => {
+        if (response) {
+          client.setQueryData(['user'], {
+            ...user,
+            report: response.report
+          })
+        }
+        client.invalidateQueries({ queryKey: ['user'] })
+      }
+    })
+  }
+
   return (
     <IonPage>
       <IonHeader>
@@ -16,6 +47,27 @@ const Shifts: React.FC = () => {
             <IonTitle size="large">Shifts</IonTitle>
           </IonToolbar>
         </IonHeader>
+        {status === 'success' &&
+          <Container height={'full'} minWidth={'full'} textAlign={'center'} padding={'3em 0 0 0'}>
+            <Text color={'white'} fontSize={'4xl'}>Welcome {user.firstName}!</Text>
+            {lastCheckOut &&
+              <Flex gap={6} width={'fit-content'} padding={2} marginTop={4} marginLeft={10} alignItems={'center'}>
+                <Icon as={FiClock} boxSize={5} color={'white'} />
+                <Stack spacing={0}>
+                  <Text color={'white'} fontSize={'xl'}>Last check out</Text>
+                  <Text color={'white'} fontSize={'md'}>{format(parseISO(lastCheckOut.checkedOut.toString()), "HH:mm - dd.MM.yyyy")}</Text>
+                </Stack>
+              </Flex>}
+            <Button
+              colorScheme={`${user.isCheckedIn ? 'red' : 'green'}`}
+              opacity={'0.9'}
+              marginTop={4}
+              size={'lg'}
+              onClick={ChangeCheckInStatus}
+            >
+              {`${user.isCheckedIn ? 'Check Out' : 'Check In'}`}
+            </Button>
+          </Container>}
       </IonContent>
     </IonPage>
   );
