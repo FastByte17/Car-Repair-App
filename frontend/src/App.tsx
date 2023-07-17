@@ -14,8 +14,9 @@ import { clipboardOutline, logInOutline, readerOutline, timerOutline } from 'ion
 
 import Login from './pages/Login';
 import Inspection from './pages/Inspection/Inspection';
-import Shifts from './pages/Shifts';
+import Shifts from './pages/Shifts/Shifts';
 import Summary from './pages/Summary';
+import Reports from './pages/Shifts/Reports'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -52,8 +53,12 @@ const App: React.FC = () => (
             <Inspection />
           </Route>
 
-          <Route path="/shifts">
+          <Route path="/shifts" >
             <Shifts />
+          </Route>
+
+          <Route path="/shifts/reports" exact>
+            <Reports />
           </Route>
 
           <Route path="/summary">

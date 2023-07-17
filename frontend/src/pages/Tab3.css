@@ -1,0 +1,31 @@
+.shift {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.shift-text {
+    color: white;
+    font-size: 2em;
+}
+
+.shift-icon {
+    color: white;
+    font-size: 2.5em;
+}
+
+.shift-icon:hover {
+    cursor: pointer;
+    color: rgb(218, 210, 210)
+}
+
+
+@media only screen and (min-width: 780px) {
+    
+    .shift-icon {
+        position: absolute;
+        right: 200px;
+    }
+}

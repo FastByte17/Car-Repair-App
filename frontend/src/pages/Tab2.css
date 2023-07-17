@@ -47,6 +47,8 @@
     font-weight: 600;
 }
 
+
+
 @media only screen and (max-width: 780px) {
     .column-item {
         padding: .1em;
@@ -55,6 +57,7 @@
     .column-container {
         overflow-x: scroll;
     }
+
 }
 
 

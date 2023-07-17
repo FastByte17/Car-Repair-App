@@ -2,11 +2,13 @@ import React, { useEffect } from 'react';
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { Text, Container, Button, Icon, Stack, Flex } from '@chakra-ui/react'
 import { FiClock } from 'react-icons/fi'
+import { TbReport } from 'react-icons/tb'
+import { Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import './Tab3.css';
-import { User } from '../types';
-import { changeCheckInStatus, fetchCurrentUser } from '../api'
+import { User } from '../../types';
+import { changeCheckInStatus, fetchCurrentUser } from '../../api'
 import { format, parseISO } from 'date-fns'
+import '../Tab3.css'
 
 
 const Shifts: React.FC = () => {
@@ -49,9 +51,14 @@ const Shifts: React.FC = () => {
         </IonHeader>
         {status === 'success' &&
           <Container height={'full'} minWidth={'full'} textAlign={'center'} padding={'3em 0 0 0'}>
-            <Text color={'white'} fontSize={'4xl'}>Welcome {user.firstName}!</Text>
+            <Container className='shift' minWidth={'full'} gap={'20px'}>
+              <Text className='shift-text'>Welcome {user.firstName}!</Text>
+              <Link className='shift-icon' to='shifts/reports'>
+                <Icon as={TbReport} />
+              </Link>
+            </Container>
             {lastCheckOut &&
-              <Flex gap={6} width={'fit-content'} padding={2} marginTop={4} marginLeft={10} alignItems={'center'}>
+              <Flex gap={6} width={'fit-content'} padding={2} marginTop={4} marginLeft={10} align={'center'}>
                 <Icon as={FiClock} boxSize={5} color={'white'} />
                 <Stack spacing={0}>
                   <Text color={'white'} fontSize={'xl'}>Last check out</Text>
