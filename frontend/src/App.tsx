@@ -53,11 +53,11 @@ const App: React.FC = () => (
             <Inspection />
           </Route>
 
-          <Route path="/shifts" >
+          <Route path="/shifts" exact={true} >
             <Shifts />
           </Route>
 
-          <Route path="/shifts/reports" exact>
+          <Route path="/shifts/reports">
             <Reports />
           </Route>
 

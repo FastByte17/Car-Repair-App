@@ -26,7 +26,7 @@ const Summary: React.FC = () => {
                 </IonHeader>
 
                 {columns && <TableContainer>
-                    <Table variant='simple'>
+                    <Table variant='striped' colorScheme='whiteAlpha'>
                         <Thead >
                             <Tr>
                                 <Th key={Date.now()} color={'white'}>Workers</Th>
@@ -37,9 +37,9 @@ const Summary: React.FC = () => {
                             {workers?.map((worker) => {
                                 return (
                                     <Tr key={worker.id}>
-                                        <Th color={'white'}>{worker.firstName} {worker.lastName}</Th>
+                                        <Td color={'white'}>{worker.firstName} {worker.lastName}</Td>
                                         {columns.map((column) => (
-                                            <Th color={'white'} key={column.id}>{worker.MyTasks.filter(task => task.column.title === column.title).length}</Th>
+                                            <Td color={'white'} key={column.id}>{worker.MyTasks.filter(task => task.column.title === column.title).length}</Td>
                                         ))}
                                     </Tr>
                                 )

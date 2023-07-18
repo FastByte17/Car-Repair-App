@@ -108,14 +108,15 @@ const ColumnItem = ({ status, error, columns, onDragEnd, inspectionMenu, addColu
                                                     />
                                                     <Menu>
                                                         <MenuButton
+                                                            background='#4a4848'
                                                             as={IconButton}
                                                             aria-label='Options'
                                                             icon={<Icon as={AiOutlineEllipsis} boxSize={7} />}
                                                             variant='outline'
                                                             size={'xs'}
                                                         />
-                                                        <MenuList>
-                                                            <MenuItem icon={<Icon as={MdDelete} />} onClick={() => deleteColumnInDb(item.id)}>
+                                                        <MenuList background='#1f1f1f'>
+                                                            <MenuItem background='#1f1f1f' icon={<Icon as={MdDelete} />} onClick={() => deleteColumnInDb(item.id)}>
                                                                 Delete
                                                             </MenuItem>
                                                         </MenuList>

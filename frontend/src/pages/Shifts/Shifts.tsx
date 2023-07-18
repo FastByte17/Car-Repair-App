@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonRouterLink } from '@ionic/react';
 import { Text, Container, Button, Icon, Stack, Flex } from '@chakra-ui/react'
 import { FiClock } from 'react-icons/fi'
 import { TbReport } from 'react-icons/tb'
-import { Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { User } from '../../types';
 import { changeCheckInStatus, fetchCurrentUser } from '../../api'
@@ -53,9 +52,9 @@ const Shifts: React.FC = () => {
           <Container height={'full'} minWidth={'full'} textAlign={'center'} padding={'3em 0 0 0'}>
             <Container className='shift' minWidth={'full'} gap={'20px'}>
               <Text className='shift-text'>Welcome {user.firstName}!</Text>
-              <Link className='shift-icon' to='shifts/reports'>
+              <IonRouterLink className='shift-icon' routerLink='/shifts/reports'>
                 <Icon as={TbReport} />
-              </Link>
+              </IonRouterLink>
             </Container>
             {lastCheckOut &&
               <Flex gap={6} width={'fit-content'} padding={2} marginTop={4} marginLeft={10} align={'center'}>
