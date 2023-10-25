@@ -8,6 +8,26 @@ ion-content {
     /* height: 100vh; */
 }
 
+.linkStyle {
+    color: #3880ff; 
+    cursor: 'pointer';
+    text-decoration-color: transparent;
+
+    transition: .6s;
+
+    /*add those for opera and mozilla support*/
+    -webkit-text-decoration-color: transparent;
+    -moz-text-decoration-color: transparent;
+}
+
+.linkStyle:hover { 
+    text-decoration: underline;
+    text-decoration-color: #3880ff;
+ 
+    /*add those for opera and mozilla support*/
+    -webkit-text-decoration-color: #3880ff;
+    -moz-text-decoration-color: #3880ff;
+}
 
 
 @media (max-width: 767px) {

@@ -1,4 +1,5 @@
-import { Redirect, Route } from 'react-router-dom';
+import React from 'react';
+import { Route, useLocation } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
@@ -9,10 +10,12 @@ import {
   IonTabs,
   setupIonicReact
 } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
 import { clipboardOutline, logInOutline, readerOutline, timerOutline } from 'ionicons/icons';
+import ProtectedRoute from './components/ProtectedRoute'
+
 
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Inspection from './pages/Inspection/Inspection';
 import Shifts from './pages/Shifts/Shifts';
 import Summary from './pages/Summary';
@@ -37,65 +40,49 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
+
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
+const App: React.FC = () => {
+  const location = useLocation();
+  const pathsToHideTabs = ['/login', '/register'];
+  const hideTabs = pathsToHideTabs.includes(location.pathname);
 
-          <Route exact path="/login">
-            <Login />
-          </Route>
 
-          <Route exact path="/inspection">
-            <Inspection />
-          </Route>
+  return (
+    <IonTabs>
+      <IonRouterOutlet>
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/register" component={Register} />
+        <ProtectedRoute exact path="/inspection" component={Inspection} />
+        <ProtectedRoute path="/shifts" exact component={Shifts} />
+        <ProtectedRoute path="/shifts/reports" exact component={Reports} />
+        <ProtectedRoute path="/summary" component={Summary} />
+      </IonRouterOutlet>
 
-          <Route path="/shifts" exact={true} >
-            <Shifts />
-          </Route>
+      <IonTabBar slot="bottom" >
+        <IonTabButton tab="login" href="/login" style={!hideTabs ? { display: 'none' } : { display: 'block' }}>
+          <IonIcon aria-hidden="true" icon={logInOutline} />
+          <IonLabel>Login</IonLabel>
+        </IonTabButton>
 
-          <Route path="/shifts/reports">
-            <Reports />
-          </Route>
+        <IonTabButton tab="inspection" href="/inspection">
+          <IonIcon aria-hidden="true" icon={clipboardOutline} />
+          <IonLabel>Inspection</IonLabel>
+        </IonTabButton>
 
-          <Route path="/summary">
-            <Summary />
-          </Route>
+        <IonTabButton tab="shifts" href="/shifts">
+          <IonIcon aria-hidden="true" icon={timerOutline} />
+          <IonLabel>Shifts</IonLabel>
+        </IonTabButton>
 
-          <Route exact path="/">
-            <Redirect to="/login" />
-          </Route>
-
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-
-          <IonTabButton tab="login" href="/login">
-            <IonIcon aria-hidden="true" icon={logInOutline} />
-            <IonLabel>Login</IonLabel>
-          </IonTabButton>
-
-          <IonTabButton tab="inspection" href="/inspection">
-            <IonIcon aria-hidden="true" icon={clipboardOutline} />
-            <IonLabel>Inspection</IonLabel>
-          </IonTabButton>
-
-          <IonTabButton tab="shifts" href="/shifts">
-            <IonIcon aria-hidden="true" icon={timerOutline} />
-            <IonLabel>Shifts</IonLabel>
-          </IonTabButton>
-
-          <IonTabButton tab="summary" href="/summary">
-            <IonIcon aria-hidden="true" icon={readerOutline} />
-            <IonLabel>Summary</IonLabel>
-          </IonTabButton>
-
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+        <IonTabButton tab="summary" href="/summary">
+          <IonIcon aria-hidden="true" icon={readerOutline} />
+          <IonLabel>Summary</IonLabel>
+        </IonTabButton>
+      </IonTabBar>
+    </IonTabs>
+  );
+}
 
 export default App;

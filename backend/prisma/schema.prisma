@@ -30,6 +30,7 @@ model User {
   firstName     String
   lastName      String   @unique
   password      String
+  device        String   @unique @default(uuid())
   pin           String
   isCheckedIn   Boolean  @default(false)  
   phoneNumber   String   @unique

@@ -81,10 +81,10 @@ const images = z
         })
     )
     .optional();
-const userId = z
+const device = z
     .string({
-        required_error: "userID is required",
-        invalid_type_error: "userID  must be a string",
+        required_error: "device is required",
+        invalid_type_error: "device  must be a string",
     })
     .trim();
 
@@ -150,7 +150,10 @@ export const registerSchema = z
 
 export const loginSchema = z.object({
     body: z.object({
-        pin,
+        email: email.optional(),
+        password: password.optional(),
+        pin: pin.optional(),
+        device: device.optional(),
     }),
 });
 

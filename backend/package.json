@@ -7,7 +7,7 @@
     "start:dev": "nodemon index.js -- openssl-legacy-provider start"
   },
   "dependencies": {
-    "@prisma/client": "^4.16.0",
+    "@prisma/client": "^5.5.0",
     "bcrypt": "^5.1.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
@@ -28,6 +28,6 @@
   },
   "type": "module",
   "devDependencies": {
-    "prisma": "^4.16.0"
+    "prisma": "^5.5.0"
   }
 }

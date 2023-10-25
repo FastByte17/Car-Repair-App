@@ -21,6 +21,7 @@ export type User = {
     password: string
     phoneNumber: string
     pin: string
+    device: string
     isCheckedIn: boolean
     role: Role
     createdAt: Date
@@ -28,6 +29,21 @@ export type User = {
     MyTasks: Task[]
     AssignedTasks: Task[]
     report: Report[]
+}
+
+export type ErrorResponse = {
+    status: string,
+    statusCode: number,
+    message: string
+}
+
+export type NewUser = {
+    email: string
+    firstName: string
+    lastName: string
+    password: string
+    phoneNumber: string
+    pin: string
 }
 
 export type History = {
