@@ -30,7 +30,8 @@ const ProtectedRoute = ({ redirectPath = '/login', component: Component, ...rest
 
     useEffect(() => {
         getWithExpiry('token')
-    }, [])
+    }, [isAuthenticated])
+
 
     return (
         <Route
@@ -41,6 +42,7 @@ const ProtectedRoute = ({ redirectPath = '/login', component: Component, ...rest
                 ) : (
                     <Redirect to="/login" />
                 )
+
             }
         />
     )

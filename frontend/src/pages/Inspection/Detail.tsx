@@ -42,7 +42,7 @@ export default function Detail({ isDetailOpen, onDetailClose, card }: Props) {
             isOpen={isDetailOpen}
             onClose={onDetailClose}>
             <ModalOverlay />
-            {value && <ModalContent>
+            {value && <ModalContent bgColor={'#1f1f1f'} color={'#ffff'}>
                 <ModalHeader paddingLeft={'17px'}>{value.vehReg}</ModalHeader>
                 <Container className='dialogue' maxH={'550px'} overflow={'scroll'}>
                     <Stack spacing={1} marginBottom={5}>

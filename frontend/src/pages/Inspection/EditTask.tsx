@@ -82,7 +82,7 @@ export default function EditTask({ showEditModal, onCloseEditModal, userStatus, 
             onClose={onCloseEditModal}>
             {/* onTransfer={changeColumnName} */}
             <ModalOverlay />
-            <ModalContent>
+            <ModalContent bgColor={'#1f1f1f'} color={'#ffff'}>
                 <ModalHeader>Edit Task</ModalHeader>
 
                 <Container className='dialogue'>

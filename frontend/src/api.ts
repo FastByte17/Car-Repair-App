@@ -1,21 +1,30 @@
 import { Columns, Task, Worker, User, Column, ColumnFormInput, reOrderInput, reOrderColumnInput, EditColumn, NewUser, ErrorResponse } from "./types";
 
 const BASE_URL = "http://localhost:3000/api/v1/";
-const token = localStorage.getItem('token');
-const headers: {
-  Authorization?: string;
-  "Content-Type": string;
-} = {
-  Authorization: "Bearer " + token,
-  "Content-Type": "application/json",
-};
-const myHeader = new Headers();
-myHeader.append("Authorization", "Bearer " + token);
+
+export const getHeader = (type?: string) => {
+  const token = localStorage.getItem('token');
+
+  if (type === 'formData') {
+    const myHeader = new Headers();
+    myHeader.append("Authorization", "Bearer " + token);
+    return myHeader
+  } else {
+    const headers: {
+      Authorization?: string;
+      "Content-Type": string;
+    } = {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    };
+    return headers;
+  }
+}
 
 // fetch currently signed in user
 export const fetchCurrentUser = async (): Promise<User> => {
   const response = await fetch(BASE_URL + "user/me", {
-    headers,
+    headers: getHeader(),
     method: "GET",
   });
   if (!response.ok) throw new Error(response.statusText);
@@ -26,7 +35,7 @@ export const fetchCurrentUser = async (): Promise<User> => {
 // changes the checkin status of a user
 export const changeCheckInStatus = async (): Promise<User> => {
   const response = await fetch(BASE_URL + "user/check", {
-    headers,
+    headers: getHeader(),
     method: "PATCH",
   });
   if (!response.ok) throw new Error(response.statusText);
@@ -37,7 +46,7 @@ export const changeCheckInStatus = async (): Promise<User> => {
 // fetches column information
 export const fetchColumns = async (): Promise<Columns> => {
   const response = await fetch(BASE_URL + "column", {
-    headers,
+    headers: getHeader(),
     method: "GET",
   });
   if (!response.ok) throw new Error(response.statusText);
@@ -49,7 +58,7 @@ export const fetchColumns = async (): Promise<Columns> => {
 export const addTask = async (data: FormData): Promise<Task> => {
   const response = await fetch(BASE_URL + "task", {
     method: "POST",
-    headers: myHeader,
+    headers: getHeader('formData'),
     body: data,
   });
   if (!response.ok) throw new Error(response.statusText);
@@ -61,7 +70,7 @@ export const addTask = async (data: FormData): Promise<Task> => {
 export const editTask = async (data: { body: FormData, id: string }): Promise<Task> => {
   const response = await fetch(BASE_URL + `task/${data.id}`, {
     method: "PATCH",
-    headers: myHeader,
+    headers: getHeader('formData'),
     body: data.body,
   });
   if (!response.ok) throw new Error(response.statusText);
@@ -73,7 +82,7 @@ export const editTask = async (data: { body: FormData, id: string }): Promise<Ta
 export const deleteTask = async (id: string): Promise<Task> => {
   const response = await fetch(BASE_URL + `task/${id}`, {
     method: "DELETE",
-    headers,
+    headers: getHeader(),
   });
   if (!response.ok) throw new Error(response.statusText);
   const task = await response.json();
@@ -84,7 +93,7 @@ export const deleteTask = async (id: string): Promise<Task> => {
 export const getTask = async (id: string): Promise<Task> => {
   const response = await fetch(BASE_URL + `task/${id}`, {
     method: "GET",
-    headers,
+    headers: getHeader(),
   });
   if (!response.ok) throw new Error(response.statusText);
   const task = await response.json();
@@ -95,7 +104,7 @@ export const getTask = async (id: string): Promise<Task> => {
 export const reOrder = async (data: reOrderInput): Promise<Task> => {
   const response = await fetch(BASE_URL + `task`, {
     method: "PATCH",
-    headers,
+    headers: getHeader(),
     body: JSON.stringify(data),
   });
   if (!response.ok) throw new Error(response.statusText);
@@ -107,7 +116,7 @@ export const reOrder = async (data: reOrderInput): Promise<Task> => {
 export const reOrderColumn = async (data: reOrderColumnInput): Promise<Column> => {
   const response = await fetch(BASE_URL + `column/${data.columnId}`, {
     method: "PATCH",
-    headers,
+    headers: getHeader(),
     body: JSON.stringify(data),
   });
   if (!response.ok) throw new Error(response.statusText);
@@ -119,7 +128,7 @@ export const reOrderColumn = async (data: reOrderColumnInput): Promise<Column> =
 export const addColumn = async (data: ColumnFormInput): Promise<Column> => {
   const response = await fetch(BASE_URL + "column", {
     method: "POST",
-    headers,
+    headers: getHeader(),
     body: JSON.stringify(data),
   });
   if (!response.ok) throw new Error(response.statusText);
@@ -131,7 +140,7 @@ export const addColumn = async (data: ColumnFormInput): Promise<Column> => {
 export const deleteColumn = async (id: string): Promise<Column> => {
   const response = await fetch(BASE_URL + `column/${id}`, {
     method: "DELETE",
-    headers,
+    headers: getHeader(),
   });
   if (!response.ok) throw new Error(response.statusText);
   const task = await response.json();
@@ -142,7 +151,8 @@ export const deleteColumn = async (id: string): Promise<Column> => {
 export const editColumn = async (data: EditColumn): Promise<Column> => {
   const response = await fetch(BASE_URL + `column/edit/${data.id}`, {
     method: "PATCH",
-    headers,
+    headers: getHeader(),
+
     body: JSON.stringify(data),
   });
   if (!response.ok) throw new Error(response.statusText);
@@ -153,7 +163,8 @@ export const editColumn = async (data: EditColumn): Promise<Column> => {
 // fetches information of all the workers
 export const fetchWorkers = async (): Promise<Worker[]> => {
   const response = await fetch(BASE_URL + "user/workers", {
-    headers,
+    headers: getHeader(),
+
     method: "GET",
   });
   if (!response.ok) throw new Error(response.statusText);
@@ -164,7 +175,7 @@ export const fetchWorkers = async (): Promise<Worker[]> => {
 // register new user account
 export const register = async (data: NewUser): Promise<{ token: string, user: User }> => {
   const response = await fetch('http://localhost:3000/register', {
-    headers,
+    headers: getHeader(),
     method: "POST",
     body: JSON.stringify(data),
   });
@@ -178,7 +189,7 @@ export const register = async (data: NewUser): Promise<{ token: string, user: Us
 
 export const login = async (data: { email: string, password: string } | { device: string, pin: string }): Promise<{ token: string, user: User }> => {
   const response = await fetch('http://localhost:3000/login', {
-    headers,
+    headers: getHeader(),
     method: "POST",
     body: JSON.stringify(data),
   });

@@ -52,6 +52,7 @@ const App: React.FC = () => {
   return (
     <IonTabs>
       <IonRouterOutlet>
+        <Route exact path="/" component={Login} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <ProtectedRoute exact path="/inspection" component={Inspection} />
@@ -60,12 +61,7 @@ const App: React.FC = () => {
         <ProtectedRoute path="/summary" component={Summary} />
       </IonRouterOutlet>
 
-      <IonTabBar slot="bottom" >
-        <IonTabButton tab="login" href="/login" style={!hideTabs ? { display: 'none' } : { display: 'block' }}>
-          <IonIcon aria-hidden="true" icon={logInOutline} />
-          <IonLabel>Login</IonLabel>
-        </IonTabButton>
-
+      <IonTabBar slot="bottom" style={hideTabs ? { display: 'none' } : { display: 'flex' }}>
         <IonTabButton tab="inspection" href="/inspection">
           <IonIcon aria-hidden="true" icon={clipboardOutline} />
           <IonLabel>Inspection</IonLabel>

@@ -32,6 +32,7 @@ import { DropResult } from "react-beautiful-dnd";
 import EditTask from './EditTask';
 import Detail from './Detail';
 import ColumnItem from './ColumnItem'
+import Logout from '../../components/Logout';
 
 
 const Inspection: React.FC = () => {
@@ -182,8 +183,11 @@ const Inspection: React.FC = () => {
   return (
     <IonPage >
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>Inspection</IonTitle>
+        <IonToolbar >
+          <Flex marginRight={4} justifyContent={'center'} alignItems={'center'}>
+            <IonTitle>Inspection</IonTitle>
+            <Logout />
+          </Flex>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -269,7 +273,7 @@ const Inspection: React.FC = () => {
 
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
-          <ModalContent>
+          <ModalContent bgColor={'#1f1f1f'} color={'#ffff'}>
             <ModalHeader>Add Task</ModalHeader>
             <Container className="ion-padding dialogue">
               <form onSubmit={addTaskToDb}>
