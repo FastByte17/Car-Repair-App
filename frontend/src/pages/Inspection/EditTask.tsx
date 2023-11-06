@@ -44,6 +44,7 @@ export default function EditTask({ showEditModal, onCloseEditModal, userStatus, 
         assigned: '',
     })
 
+    // useEffect to pre-fill form values with data from the selected task.
     useEffect(() => {
         const columns = queryClient.getQueryData<Columns>(['columns'])
         const currentCard = columns?.find(column => column.id === card.columnId)?.tasks.find(task => task.id === card.taskId);
@@ -55,9 +56,11 @@ export default function EditTask({ showEditModal, onCloseEditModal, userStatus, 
         })
     }, [card])
 
+    // Function to edit a task in the database.
     const editTaskInDb = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        // Prepare the task data to be updated.
         const task = new FormData()
         const assigned = (user && user.role === Role.EMPLOYEE) ? user.id : values.assigned
         task.append('vehReg', values.vehReg.toUpperCase())
@@ -67,8 +70,10 @@ export default function EditTask({ showEditModal, onCloseEditModal, userStatus, 
         })
         task.append('assigned', assigned)
 
+        // Send a mutation to update the task in the database.
         mutate({ body: task, id: card.taskId }, {
             onSuccess: () => {
+                // Invalidate queries to update data after editing a task.
                 queryClient.invalidateQueries({ queryKey: ['columns'] })
             }
         })

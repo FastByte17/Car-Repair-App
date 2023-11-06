@@ -30,13 +30,14 @@ const getListStyle = (isDraggingOver: boolean) => ({
 
 
 const ColumnItem = ({ status, error, columns, onDragEnd, inspectionMenu, addColumnToDb, columnTitle, setColumnTitle }: Props) => {
+    // Initialize mutation functions and query client for managing columns.
     const { mutate: deleteCol } = useMutation<Column, Error, string, unknown>({ mutationKey: ['deleteColumn'], mutationFn: deleteColumn });
     const { mutate: editCol } = useMutation<Column, Error, EditColumn, unknown>({ mutationKey: ['editColumn'], mutationFn: editColumn });
     const queryClient = useQueryClient();
     const toast = useToast()
 
 
-
+    // Function to delete a column in the database.
     const deleteColumnInDb = (id: string) => {
         deleteCol(id, {
             onSuccess: () => {
@@ -51,6 +52,7 @@ const ColumnItem = ({ status, error, columns, onDragEnd, inspectionMenu, addColu
         })
     }
 
+    // Function to edit a column in the database.
     const editColumnInDb = (title: string, id: string) => {
         if (!title || title.length > 11) {
             return toast({

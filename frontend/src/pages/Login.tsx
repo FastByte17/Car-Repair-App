@@ -10,16 +10,25 @@ const defaultValues = {
 }
 
 const Login: React.FC = (props) => {
+  // State to manage the PIN input.
   const [pin, setPin] = useState('');
+
+  // State to manage login form inputs with default values.
   const [loginInputs, setLoginInputs] = useState(defaultValues);
+
+  // State to manage error messages.
   const [error, setError] = useState('');
+
+  // Get the device ID from local storage.
   const deviceId = localStorage.getItem('device')
+
+  // Access the routing history.
   const history = useHistory();
 
 
   useEffect(() => { }, [error])
 
-
+  // Function to handle input changes in the form fields.
   const handleInputChange = (event: InputCustomEvent<InputChangeEventDetail>) => {
     const { name, value } = event.target;
     if (name === 'pin') {
@@ -32,6 +41,7 @@ const Login: React.FC = (props) => {
     }
   };
 
+  // Function to retrieve device ID from local storage with expiry check.
   const getWithExpiry = () => {
     if (!deviceId) {
       return null
@@ -48,6 +58,7 @@ const Login: React.FC = (props) => {
     return item.value
   }
 
+  // Function to handle form submission.
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
@@ -94,12 +105,14 @@ const Login: React.FC = (props) => {
       <IonContent className="ion-padding">
         <form onSubmit={handleSubmit}>
           {deviceId ? (
+            // Render PIN input if device ID exists.
             <IonItem>
               <IonLabel position="floating">Enter Pin Code</IonLabel>
               <IonInput type="number" name='pin' value={pin} maxlength={4} onIonInput={handleInputChange} pattern="[0-9]*" style={{ width: '100%' }} />
             </IonItem>
           ) :
             (
+              // Render email and password inputs if no device ID.
               <div>
                 <IonItem>
                   <IonLabel position="floating">email</IonLabel>

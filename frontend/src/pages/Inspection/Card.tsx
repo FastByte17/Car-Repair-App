@@ -35,7 +35,10 @@ const getListStyle = (isDraggingOver: boolean) => ({
 
 
 const Card = ({ inspectionMenu, column }: Props) => {
+    // Fetch user data from a query.
     const user = useQueryClient().getQueryData<User>(['user']);
+
+    // Determine the color of the card based on the column title.
     const color = column.title === "In Progress" ? "warning" : (column.title === "On Hold" ? "danger" : (column.title === "Car Wash" ? "secondary" : "success"));
 
     return (

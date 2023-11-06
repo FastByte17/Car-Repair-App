@@ -19,8 +19,11 @@ export default function Logout({ }: Props) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const history = useHistory()
 
+    // The logout function which logs out the user.
     const logout = () => {
+        // Deletes the token from the local storage.
         localStorage.removeItem('token')
+        // Redirects the user to the login page.
         history.push('/login')
         onClose()
     }

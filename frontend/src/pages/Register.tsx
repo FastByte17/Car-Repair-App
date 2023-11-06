@@ -15,11 +15,15 @@ const defaultState = {
 }
 
 const Register = () => {
+    // State to manage form input values.
     const [values, setValues] = useState(defaultState)
+
+    // State to manage error messages.
     const [error, setError] = useState('');
 
     useEffect(() => { }, [error])
 
+    // Function to handle input changes in the form fields.
     const handleInputChange = (event: InputCustomEvent<InputChangeEventDetail>) => {
         const { name, value } = event.target;
         setValues((prev) => ({
@@ -28,6 +32,7 @@ const Register = () => {
         }))
     };
 
+    // Function to handle form submission.
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
@@ -46,6 +51,7 @@ const Register = () => {
                 localStorage.setItem('device', JSON.stringify(item))
                 localStorage.setItem('token', token)
             }
+            // Reset form input values to the default state.
             setValues(defaultState)
         } catch (e) {
             console.error(e)

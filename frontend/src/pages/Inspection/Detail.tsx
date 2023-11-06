@@ -28,6 +28,7 @@ export default function Detail({ isDetailOpen, onDetailClose, card }: Props) {
     const [value, setValue] = useState<Task | null>()
     const [status, setStatus] = useState<string | ''>('')
 
+    // useEffect to fetch data related to the selected card when it changes.
     useEffect(() => {
         const columns = queryClient.getQueryData<Columns>(['columns'])
         const currentColumn = columns?.find(column => column.id === card.columnId)
@@ -63,6 +64,7 @@ export default function Detail({ isDetailOpen, onDetailClose, card }: Props) {
                     </Stack>
                     <Stack spacing={1} marginBottom={5}>
                         <Text>History</Text>
+                        {/* Display a list of historical records for the task */}
                         <OrderedList>{value.history.map((record, i) => {
                             let startDate: Date;
                             let endDate: Date;
@@ -73,6 +75,7 @@ export default function Detail({ isDetailOpen, onDetailClose, card }: Props) {
                                 startDate = new Date(record.changedAt)
                                 endDate = new Date(Date.now())
                             }
+                            // Calculate the duration between historical records.
                             const duration = formatDistance(startDate, endDate);
                             return (
                                 <ListItem key={record.id}>

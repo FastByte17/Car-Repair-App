@@ -8,11 +8,16 @@ import { format, parseISO, differenceInHours } from 'date-fns'
 type Props = {}
 
 function Reports({ }: Props) {
+    // Fetch user data and status from a query.
     const { data: user, status } = useQuery<User, Error>({ queryKey: ['user'], queryFn: fetchCurrentUser });
+
+    // Define table column headers.
     const heads = [{ title: 'Date' }, { title: 'Hours' }]
 
-
+    // Function to format the time difference between checkedOut and checkedIn.
     const formatDate = (checkedOut: Date, checkedIn: Date): string => {
+
+        // Calculate the time difference in hours and minutes.
         const hoursDifference = differenceInHours(new Date(Date.parse(checkedOut.toString())), new Date(Date.parse(checkedIn.toString())))
         const formattedDifference = Math.floor(hoursDifference) + ':' + ((hoursDifference % 1) * 60).toFixed(0).padStart(2, '0');
         return formattedDifference

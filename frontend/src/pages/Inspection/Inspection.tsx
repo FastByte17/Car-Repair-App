@@ -44,11 +44,15 @@ const Inspection: React.FC = () => {
   const { data: columns, status, error } = useQuery<Columns, Error>({ queryKey: ['columns'], queryFn: fetchColumns });
   const { data: user, status: userStatus } = useQuery<User, Error>({ queryKey: ['user'], queryFn: fetchCurrentUser });
   const { data: workers, status: workersStatus } = useQuery<Worker[], Error>({ queryKey: ['workers'], queryFn: fetchWorkers });
+
+  // Mutation functions.
   const { mutate, isError, error: addTaskError } = useMutation<Task, Error, FormData, unknown>({ mutationKey: ['addTask'], mutationFn: addTask });
   const { mutate: createColumn } = useMutation<Column, Error, ColumnFormInput, unknown>({ mutationKey: ['addColumn'], mutationFn: addColumn });
   const { mutate: reorderTasks } = useMutation<Task, Error, reOrderInput, unknown>({ mutationKey: ['reorderTasks'], mutationFn: reOrder });
   const { mutate: reorderColumns } = useMutation<Column, Error, reOrderColumnInput, unknown>({ mutationKey: ['reorderColumns'], mutationFn: reOrderColumn });
   const { mutate: deleteATask } = useMutation<Task, Error, string, unknown>({ mutationKey: ['deleteTask'], mutationFn: deleteTask });
+
+  // State variables.
   const [selectListVisible, setSelectListVisible] = useState(false);
   const [columnTitle, setColumnTitle] = useState('');
   const [selectedCard, setSelectedCard] = useState({
@@ -63,7 +67,7 @@ const Inspection: React.FC = () => {
   });
 
 
-
+  // Function to add a task to the database.
   const addTaskToDb = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!columns || columns.length < 0) {
@@ -74,6 +78,7 @@ const Inspection: React.FC = () => {
         isClosable: true,
       })
     } else {
+      // Prepare and send a mutation to add a new task to the database.
       const task = new FormData()
       const assigned = (user && user.role === Role.EMPLOYEE) ? user.id : values.assigned
       task.append('vehReg', values.vehReg.toUpperCase())
@@ -85,6 +90,7 @@ const Inspection: React.FC = () => {
       task.append('column', columns[0].id.toString())
       mutate(task, {
         onSuccess: () => {
+          // Invalidate queries to update data after adding a task.
           queryClient.invalidateQueries({ queryKey: ['columns'] })
           queryClient.invalidateQueries({ queryKey: ['workers'] })
         }
@@ -93,6 +99,7 @@ const Inspection: React.FC = () => {
     onClose();
   };
 
+  // Function to add a new column to the database.
   const addColumnToDb = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!columnTitle) {
@@ -104,15 +111,16 @@ const Inspection: React.FC = () => {
       })
     }
 
-
+    // Prepare and send a mutation to add a new column to the database.
     createColumn({ title: columnTitle }, {
       onSuccess: () => {
+        // Invalidate the 'columns' query to update data after adding a column.
         queryClient.invalidateQueries({ queryKey: ['columns'] })
       },
     })
   }
 
-
+  // Function to display a menu for a specific task in the inspection.
   const inspectionMenu = (taskId: string, columnId: string) => {
     setSelectedCard({ taskId, columnId });
     setSelectListVisible(true);
@@ -122,6 +130,7 @@ const Inspection: React.FC = () => {
     setSelectListVisible(false);
   };
 
+  // Function to handle task and column reordering using drag and drop.
   const onDragEnd = (result: DropResult) => {
 
     // dropped outside the list
@@ -175,7 +184,7 @@ const Inspection: React.FC = () => {
         }
       }
     }
-
+    // Update data and queries after reordering tasks or columns.
   }
 
 

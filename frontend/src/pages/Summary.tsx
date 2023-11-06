@@ -7,7 +7,10 @@ import { Columns, Worker, } from '../types';
 
 
 const Summary: React.FC = () => {
+    // Fetch columns data using a query.
     const { data: columns } = useQuery<Columns, Error>({ queryKey: ['columns'], queryFn: fetchColumns });
+
+    // Fetch workers data using a query.
     const { data: workers } = useQuery<Worker[], Error>({ queryKey: ['workers'], queryFn: fetchWorkers });
 
 
@@ -25,19 +28,26 @@ const Summary: React.FC = () => {
                     </IonToolbar>
                 </IonHeader>
 
+                {/* Check if columns data is available before rendering the table. */}
                 {columns && <TableContainer>
                     <Table variant='striped' colorScheme='whiteAlpha'>
                         <Thead >
                             <Tr>
                                 <Th key={Date.now()} color={'white'}>Workers</Th>
+
+                                {/* Render table headers for each column. */}
                                 {columns.map((column) => <Th key={column.id} color={'white'}>{column.title}</Th>)}
                             </Tr>
                         </Thead>
                         {workers && <Tbody>
+
+                            {/* Map through workers and display their tasks in respective columns. */}
                             {workers?.map((worker) => {
                                 return (
                                     <Tr key={worker.id}>
                                         <Td color={'white'}>{worker.firstName} {worker.lastName}</Td>
+
+                                        {/* Map through columns to show the number of tasks in each column for the worker. */}
                                         {columns.map((column) => (
                                             <Td color={'white'} key={column.id}>{worker.MyTasks.filter(task => task.column.title === column.title).length}</Td>
                                         ))}

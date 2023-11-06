@@ -18,23 +18,28 @@ const EditableLabel = ({ text, onSave, provided, column }: Props) => {
     const fonts = ['lg', 'xl', '2xl', '4xl']
     const padding = '0px 4px'
 
+    // Function to handle entering edit mode.
     const handleEdit = () => {
         setEditing(true);
     };
 
+    // Function to save changes or exit edit mode.
     const handleSave = () => {
         if (value === column.title) {
             setEditing(false);
             return
         }
+        // Call the 'onSave' function to save the changes and exit edit mode.
         onSave(value, column.id);
         setEditing(false);
     };
 
+    // Function to handle changes in the input field.
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
     };
 
+    // Render the input field when in editing mode.
     if (editing) {
         return (
             <Input

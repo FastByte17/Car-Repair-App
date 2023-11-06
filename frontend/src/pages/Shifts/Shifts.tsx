@@ -11,25 +11,35 @@ import '../Tab3.css'
 
 
 const Shifts: React.FC = () => {
+  // Access the query client.
   const client = useQueryClient()
+
+  // Fetch user data and status from a query.
   const { data: user, status } = useQuery<User, Error>({ queryKey: ['user'], queryFn: fetchCurrentUser });
+
+  // Find the last check-out entry in the user's report.
   const lastCheckOut = user && user.report.findLast(rep => rep.checkedOut !== null)
+
+  // Mutation to change the check-in status.
   const { mutate: changeStatus, data: response } = useMutation<User, Error, any>({ mutationKey: ['checkIn'], mutationFn: changeCheckInStatus });
 
 
   useEffect(() => {
   }, [user])
 
+  // Function to change the check-in status.
   const ChangeCheckInStatus = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     changeStatus({}, {
       onSuccess: () => {
         if (response) {
+          // Update user's report data in the query client.
           client.setQueryData(['user'], {
             ...user,
             report: response.report
           })
         }
+        // Invalidate the 'user' query to trigger a re-fetch.
         client.invalidateQueries({ queryKey: ['user'] })
       }
     })
